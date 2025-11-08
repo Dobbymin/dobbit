@@ -41,19 +41,33 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-surface-dark: var(--surface-dark);
+  --color-text-muted-dark: var(--text-muted-dark);
+  --color-text-dark: var(--text-dark);
+  --color-text-light: var(--text-light);
+  --color-negative: var(--negative);
+  --color-positive: var(--positive);
 }
 
 :root {
+  --positive: #00b15d;
+  --negative: #ff4136;
+  --text-dark: #e0e0e0;
+  --text-light: #121212;
+  --text-muted-dark: #a0a0a0;
+  --surface-dark: #1e1e1e;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #121212;
+  --background-light: #f6f8f7;
+  --background-dark: #121212;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #32cd32;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: #2e8b57;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
