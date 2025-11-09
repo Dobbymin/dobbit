@@ -1,12 +1,6 @@
 import { MarketInfoType } from "@/entities";
 import { APIResponse } from "@/shared";
 
-// type MarketApiResponse = {
-//   success: boolean;
-//   data: MarketInfoType[];
-//   error?: string;
-// };
-
 export const marketAPI = async (): Promise<MarketInfoType[]> => {
   const response = await fetch("/api/market", { cache: "no-store" });
   if (!response.ok) {
