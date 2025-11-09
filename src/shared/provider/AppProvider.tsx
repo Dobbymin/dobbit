@@ -1,3 +1,5 @@
+import { Toaster } from "../components";
+
 import { QueryProvider } from "./components";
 
 type Props = {
@@ -5,5 +7,10 @@ type Props = {
 };
 
 export const AppProvider = ({ children }: Props) => {
-  return <QueryProvider>{children}</QueryProvider>;
+  return (
+    <QueryProvider>
+      {children}
+      <Toaster />
+    </QueryProvider>
+  );
 };
