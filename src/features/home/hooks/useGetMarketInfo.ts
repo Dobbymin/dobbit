@@ -7,6 +7,5 @@ export const useGetMarketInfo = () => {
     queryKey: ["market-info"],
     queryFn: marketAPI,
     refetchInterval: 10000, // 10초 폴링
-    refetchOnWindowFocus: false,
   });
 };
