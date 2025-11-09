@@ -3,21 +3,22 @@ import { marketAllAPI, tickerAPI } from "../model";
 export const marketInfoHandler = async () => {
   const marketData = await marketAllAPI();
 
-  const KRWmarketList = marketData
-    .filter((item) => item.market.startsWith("KRW-"))
-    .map((item) => ({
-      market: item.market,
-      korean_name: item.korean_name,
-    }));
-  // const marketName = KRWmarketList.map((item) => item.korean_name);
+  const krwMarketMap = new Map<string, { korean_name: string }>();
+  marketData.forEach((item) => {
+    if (item.market.startsWith("KRW-")) {
+      krwMarketMap.set(item.market, { korean_name: item.korean_name });
+    }
+  });
 
-  // const marketList = KRWMarkets.map((item) => item.market, item.korean_name);
+  const krwMarketCodes = Array.from(krwMarketMap.keys());
+  if (krwMarketCodes.length === 0) {
+    return [];
+  }
 
-  const tickerData = await tickerAPI(KRWmarketList.map((item) => item.market));
-  // const tickerData = await tickerAPI(["KRW-WAXP"]);
+  const tickerData = await tickerAPI(krwMarketCodes);
 
   const result = tickerData.map((ticker) => {
-    const marketInfo = KRWmarketList.find((m) => m.market === ticker.market);
+    const marketInfo = krwMarketMap.get(ticker.market);
 
     return {
       market: ticker.market,
