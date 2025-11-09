@@ -1,5 +1,6 @@
-import { Geist_Mono, Noto_Sans, Roboto } from "next/font/google";
+import { Noto_Sans, Roboto } from "next/font/google";
 
+import { AppProvider } from "@/shared";
 import { AppLayout } from "@/widgets";
 import type { Metadata } from "next";
 
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={`${roboto.variable} ${notoSans.variable} antialiased`}>
-        <AppLayout>{children}</AppLayout>
+        <AppProvider>
+          <AppLayout>{children}</AppLayout>
+        </AppProvider>
       </body>
     </html>
   );

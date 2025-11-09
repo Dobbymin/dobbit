@@ -8,7 +8,7 @@ export interface MarketAllItem {
 }
 
 export const marketAllAPI = async (): Promise<MarketAllItem[]> => {
-  const response = await fetch(`${UPBIT_URL}/market/all?isDetails=true`, {
+  const response = await fetch(`${UPBIT_URL}/market/all?isDetails=false`, {
     next: { revalidate: 60 }, // 60초 캐시 (서버 컴포넌트 환경에서)
   });
 

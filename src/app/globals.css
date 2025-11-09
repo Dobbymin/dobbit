@@ -47,9 +47,13 @@
   --color-text-light: var(--text-light);
   --color-negative: var(--negative);
   --color-positive: var(--positive);
+  --color-increase: var(--increase);
+  --color-decrease: var(--decrease);
 }
 
 :root {
+  --decrease: #1375ec;
+  --increase: #dd3c44;
   --positive: #00b15d;
   --negative: #ff4136;
   --text-dark: #e0e0e0;
