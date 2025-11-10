@@ -21,8 +21,16 @@ export const StatsAreaSection = () => {
               <TableItem label='보유 KRW' value={data.heldKRW} unit='KRW' />
               <TableItem label='총보유 자산' value={data.totalAssets} unit='KRW' />
             </TableCell>
-            <Separator className='my-4' />
-            <TableCell className='flex w-full justify-between gap-10 px-6 py-4'>
+          </TableRow>
+        </TableBody>
+      </Table>
+
+      <Separator className='my-4 border-t border-text-dark/10' />
+
+      <Table>
+        <TableBody>
+          <TableRow className='flex w-full flex-col'>
+            <TableCell className='flex w-full justify-between gap-10 px-6 py-6'>
               <TableItem label='총 매수' value={data.totalBuy} unit='KRW' />
               <TableItem label='총 평가 손익' value={data.totalProfitLoss} unit='KRW' />
             </TableCell>
