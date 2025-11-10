@@ -2,10 +2,10 @@ import { ChartSection, CoinInfoSection, OrderSection } from "@/features";
 
 export default function Home() {
   return (
-    <main className='flex flex-1 overflow-hidden'>
+    <div className='flex w-full justify-center'>
       <CoinInfoSection />
       <ChartSection />
       <OrderSection />
-    </main>
+    </div>
   );
 }
