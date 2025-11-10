@@ -6,11 +6,11 @@ import { UserRound, Wallet } from "lucide-react";
 import Logo from "@/shared/assets/logo.webp";
 
 import { ROUTER_PATH } from "../../../constants";
-import { Avatar, AvatarFallback, AvatarImage, Button } from "../../ui";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui";
 
 export const Header = () => {
   return (
-    <header className='h-20 w-screen border-b border-solid border-white/10 bg-surface-dark/30'>
+    <header className='h-20 w-full border-b border-solid border-white/10 bg-surface-dark/30'>
       <div className='mx-auto flex h-full w-full items-center justify-between px-6 py-3'>
         <Link href={ROUTER_PATH.HOME} className='flex items-center gap-4'>
           <Image src={Logo} alt='Logo' width={24} height={24} />
