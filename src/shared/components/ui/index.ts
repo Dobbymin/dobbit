@@ -1,5 +1,6 @@
 export * from "./avatar";
 export * from "./button";
+export * from "./card";
 export * from "./chart";
 export * from "./input-group";
 export * from "./input";
