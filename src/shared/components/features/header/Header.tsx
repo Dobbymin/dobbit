@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Bell, UserRound } from "lucide-react";
+import { UserRound, Wallet } from "lucide-react";
 
 import Logo from "@/shared/assets/logo.webp";
 
@@ -42,9 +42,15 @@ export const Header = () => {
           </div>
         </nav>
         <div className='flex items-center justify-end gap-4'>
-          <Button className='flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-surface-dark text-text-muted-dark hover:bg-white/10 hover:text-white'>
-            <Bell className='size-5' />
-          </Button>
+          <Link
+            href={ROUTER_PATH.WALLET}
+            className='rounded-md bg-surface-dark px-3 py-2 text-text-muted-dark hover:bg-white/10 hover:text-white'
+          >
+            <div className='flex items-center gap-2'>
+              <Wallet className='size-5' />
+              <p className='text-sm font-semibold'>Wallet</p>
+            </div>
+          </Link>
           <Avatar>
             <AvatarImage src={Logo.src} alt='User avatar' width={40} height={40} />
             <AvatarFallback className='bg-transparent'>
