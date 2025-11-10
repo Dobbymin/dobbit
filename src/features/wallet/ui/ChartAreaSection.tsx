@@ -1,3 +1,5 @@
+"use client";
+
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent } from "@/shared";
 import { Pie, PieChart } from "recharts";
 
@@ -30,7 +32,11 @@ export const ChartAreaSection = () => {
               outerRadius={90}
               strokeWidth={0}
             />
-            <ChartLegend content={<ChartLegendContent />} verticalAlign='bottom' className='flex-wrap gap-2' />
+            <ChartLegend
+              content={<ChartLegendContent payload={undefined} />}
+              verticalAlign='bottom'
+              className='flex-wrap gap-2'
+            />
           </PieChart>
         </ChartContainer>
         <div className='absolute top-3/7 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center'>
