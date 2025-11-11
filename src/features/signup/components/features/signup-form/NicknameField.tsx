@@ -2,18 +2,18 @@ import type { SignupSchemaType } from "@/entities";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/shared";
 import { useFormContext } from "react-hook-form";
 
-export const EmailField = () => {
+export const NicknameField = () => {
   const form = useFormContext<SignupSchemaType>();
 
   return (
     <FormField
       control={form.control}
-      name='userEmail'
+      name='nickname'
       render={({ field }) => (
         <FormItem>
-          <FormLabel>이메일</FormLabel>
+          <FormLabel>닉네임</FormLabel>
           <FormControl className='grid gap-3'>
-            <Input {...field} placeholder='이메일을 입력하세요' />
+            <Input {...field} placeholder='닉네임을 입력하세요' />
           </FormControl>
           <FormMessage />
         </FormItem>

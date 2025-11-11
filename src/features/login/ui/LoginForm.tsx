@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { PasswordField, UserEmailField } from "../components";
+import { PasswordField, UserIdField } from "../components";
 
 export const LoginForm = () => {
   const { setAccessToken } = useAuthStore();
@@ -20,7 +20,7 @@ export const LoginForm = () => {
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      userEmail: "",
+      userId: "",
       password: "",
     },
   });
@@ -36,7 +36,7 @@ export const LoginForm = () => {
   const { mutate: loginMutate, isPending } = useMutation({
     mutationFn: async (data: LoginSchemaType) => {
       const response = await loginAPI({
-        email: data.userEmail,
+        email: `${data.userId}@dobbit.com`,
         password: data.password,
       });
       return {
@@ -57,7 +57,7 @@ export const LoginForm = () => {
         onSubmit={(e) => e.preventDefault()}
       >
         <div className='flex w-80 flex-col gap-4'>
-          <UserEmailField />
+          <UserIdField />
           <PasswordField />
         </div>
         <div className='flex w-80 justify-center gap-4'>

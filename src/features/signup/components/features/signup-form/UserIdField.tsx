@@ -1,11 +1,10 @@
-"use client";
-
-import type { LoginSchemaType } from "@/entities";
+import type { SignupSchemaType } from "@/entities";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/shared";
 import { useFormContext } from "react-hook-form";
 
-export const UserEmailField = () => {
-  const form = useFormContext<LoginSchemaType>();
+export const UserIdField = () => {
+  const form = useFormContext<SignupSchemaType>();
+
   return (
     <FormField
       control={form.control}

@@ -10,7 +10,7 @@ import { Link } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { ConfirmPasswordField, EmailField, PasswordField } from "../components";
+import { ConfirmPasswordField, NicknameField, PasswordField, UserIdField } from "../components";
 
 export const SignupForm = () => {
   const router = useRouter();
@@ -21,6 +21,7 @@ export const SignupForm = () => {
       userEmail: "",
       password: "",
       confirmPassword: "",
+      nickname: "",
     },
     mode: "onChange",
   });
@@ -34,7 +35,7 @@ export const SignupForm = () => {
   const { mutate: signupMutate, isPending } = useMutation({
     mutationFn: (data: SignupSchemaType) => {
       return signupAPI({
-        email: data.userEmail,
+        email: `${data.userEmail}@dobbit.com`,
         password: data.password,
       });
     },
@@ -52,11 +53,12 @@ export const SignupForm = () => {
         onSubmit={(e) => e.preventDefault()}
       >
         <div className='flex w-80 flex-col gap-6'>
-          <EmailField />
+          <UserIdField />
           <div className='flex flex-col gap-4'>
             <PasswordField />
             <ConfirmPasswordField />
           </div>
+          <NicknameField />
         </div>
         <div className='flex w-80 justify-center gap-4'>
           <Button className='w-full' type='submit' variant='secondary' onClick={form.handleSubmit(onSubmit)}>
