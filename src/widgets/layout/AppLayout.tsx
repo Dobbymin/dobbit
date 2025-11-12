@@ -6,9 +6,9 @@ type Props = {
 
 export const AppLayout = ({ children }: Props) => {
   return (
-    <div className='flex w-full flex-col'>
+    <div className='flex min-h-screen w-full flex-col'>
       <Header />
-      <main className='flex w-full justify-center'>{children}</main>
+      <main className='flex w-full flex-1 justify-center'>{children}</main>
       <footer></footer>
     </div>
   );

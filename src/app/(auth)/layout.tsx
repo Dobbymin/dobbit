@@ -3,5 +3,9 @@ type Props = {
 };
 
 export default function AuthLayout({ children }: Props) {
-  return <div>{children}</div>;
+  return (
+    <div className='flex items-center justify-center'>
+      <div className='bg-surface-dark p-8'>{children}</div>
+    </div>
+  );
 }
