@@ -1,6 +1,6 @@
 import { Toaster } from "../components";
 
-import { QueryProvider } from "./components";
+import { AuthProvider, QueryProvider } from "./components";
 
 type Props = {
   children: React.ReactNode;
@@ -9,7 +9,7 @@ type Props = {
 export const AppProvider = ({ children }: Props) => {
   return (
     <QueryProvider>
-      {children}
+      <AuthProvider>{children}</AuthProvider>
       <Toaster />
     </QueryProvider>
   );
