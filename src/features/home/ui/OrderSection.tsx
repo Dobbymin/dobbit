@@ -9,7 +9,7 @@ export const OrderSection = () => {
     setOrderValue(e.target.value);
   };
   return (
-    <aside className='flex w-[15%] flex-col space-y-4 border-l border-white/10 bg-surface-dark/20 p-4'>
+    <aside className='flex w-full flex-col space-y-4 p-4'>
       <div className='rounded-lg bg-surface-dark p-4'>
         <div className='mb-4 flex border-b border-white/10'>
           <button className='flex-1 border-b-2 border-primary pb-2 text-sm font-semibold text-primary'>Market</button>
