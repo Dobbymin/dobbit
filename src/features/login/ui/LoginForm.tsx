@@ -52,17 +52,14 @@ export const LoginForm = () => {
 
   return (
     <Form {...form}>
-      <form
-        className='flex w-full flex-col items-center justify-center gap-6 px-4'
-        onSubmit={(e) => e.preventDefault()}
-      >
+      <form className='flex w-full flex-col items-center justify-center gap-6' onSubmit={(e) => e.preventDefault()}>
         <div className='flex w-80 flex-col gap-4'>
           <UserIdField />
           <PasswordField />
         </div>
         <div className='flex w-80 justify-center gap-4'>
           <Button
-            className='w-full text-white'
+            className='w-full py-5 text-white'
             disabled={!form.formState.isValid || isPending}
             type='submit'
             variant='secondary'
@@ -73,7 +70,7 @@ export const LoginForm = () => {
         </div>
         <div className='flex items-center gap-2'>
           <span className='text-sm'>아직 회원이 아니신가요?</span>
-          <Link className='text-base font-bold text-black hover:underline' href={ROUTER_PATH.SIGNUP}>
+          <Link className='text-base font-bold text-primary/80 hover:underline' href={ROUTER_PATH.SIGNUP}>
             회원가입
           </Link>
         </div>

@@ -1,16 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { SignupSchemaType, signupAPI, signupSchema } from "@/entities";
 import { Button, Form, ROUTER_PATH, Spinner } from "@/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Link } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { ConfirmPasswordField, NicknameField, PasswordField, UserIdField } from "../components";
+import { ConfirmPasswordField, PasswordField, UserIdField } from "../components";
 
 export const SignupForm = () => {
   const router = useRouter();
@@ -21,7 +21,6 @@ export const SignupForm = () => {
       userEmail: "",
       password: "",
       confirmPassword: "",
-      nickname: "",
     },
     mode: "onChange",
   });
@@ -48,26 +47,25 @@ export const SignupForm = () => {
 
   return (
     <Form {...form}>
-      <form
-        className='flex w-full flex-col items-center justify-center gap-6 px-4'
-        onSubmit={(e) => e.preventDefault()}
-      >
+      <form className='flex w-full flex-col items-center justify-center gap-6' onSubmit={(e) => e.preventDefault()}>
         <div className='flex w-80 flex-col gap-6'>
           <UserIdField />
-          <div className='flex flex-col gap-4'>
-            <PasswordField />
-            <ConfirmPasswordField />
-          </div>
-          <NicknameField />
+          <PasswordField />
+          <ConfirmPasswordField />
         </div>
         <div className='flex w-80 justify-center gap-4'>
-          <Button className='w-full' type='submit' variant='secondary' onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            className='w-full py-5 text-white'
+            type='submit'
+            variant='secondary'
+            onClick={form.handleSubmit(onSubmit)}
+          >
             {isPending ? <Spinner /> : "회원가입"}
           </Button>
         </div>
         <div className='flex items-center gap-2'>
           <span className='text-sm'>이미 가입했다면?</span>
-          <Link className='text-base font-bold text-black hover:underline' href={ROUTER_PATH.LOGIN}>
+          <Link className='text-base font-bold text-primary hover:underline' href={ROUTER_PATH.LOGIN}>
             로그인
           </Link>
         </div>
