@@ -27,6 +27,7 @@ export const LoginForm = () => {
 
   const onSuccess = (data: LoginResponse) => {
     toast.success("로그인 성공!");
+
     setAccessToken(data.accessToken);
 
     router.push(ROUTER_PATH.HOME);
