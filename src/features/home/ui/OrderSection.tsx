@@ -1,4 +1,13 @@
+"use client";
+
+import { useState } from "react";
+
 export const OrderSection = () => {
+  const [orderValue, setOrderValue] = useState("");
+
+  const onChangeOrder = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOrderValue(e.target.value);
+  };
   return (
     <aside className='flex w-[15%] flex-col space-y-4 border-l border-white/10 bg-surface-dark/20 p-4'>
       <div className='rounded-lg bg-surface-dark p-4'>
@@ -18,7 +27,8 @@ export const OrderSection = () => {
                 className='form-input bg-background-dark h-10 w-full rounded-md border-white/10 pr-12 text-sm text-text-dark placeholder:text-text-muted-dark focus:ring-2 focus:ring-primary/50 focus:outline-0'
                 id='price'
                 type='text'
-                value='Market'
+                onChange={onChangeOrder}
+                value={orderValue}
               />
               <span className='absolute top-1/2 right-3 -translate-y-1/2 text-xs text-text-muted-dark'>USD</span>
             </div>
