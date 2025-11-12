@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 
-import { useSupabaseUser } from "@/entities";
+import { useIsAuth } from "@/entities";
 import { UserRound, Wallet } from "lucide-react";
 
 import { ROUTER_PATH } from "../../../constants";
+import { useGetSession, useSelectChange } from "../../../hooks";
 import {
   Avatar,
   AvatarFallback,
@@ -18,10 +19,13 @@ import {
 } from "../../ui";
 
 export const LoginButton = () => {
-  const { user, isAuthenticated, isLoading } = useSupabaseUser();
+  const session = useGetSession();
+  const { isAuthenticated, isLoading } = useIsAuth();
 
   // Supabase user의 avatar URL 또는 빈 문자열
-  const userAvatarUrl = user?.user_metadata?.avatar_url || "";
+  const userAvatarUrl = session?.user?.user_metadata?.avatar_url || "";
+
+  const handleSelectChange = useSelectChange();
 
   // 로딩 중이거나 인증된 경우 Wallet 버튼과 Avatar 표시
   if (isLoading || isAuthenticated) {
@@ -36,7 +40,7 @@ export const LoginButton = () => {
             <p className='text-sm font-semibold'>Wallet</p>
           </div>
         </Link>
-        <Select>
+        <Select onValueChange={handleSelectChange}>
           <SelectTrigger className='border-0 bg-transparent p-0 shadow-none ring-0 outline-none hover:bg-transparent focus:border-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=open]:ring-0 [&>svg]:hidden'>
             <Avatar>
               {!isLoading && <AvatarImage src={userAvatarUrl} alt='User Avatar' />}
