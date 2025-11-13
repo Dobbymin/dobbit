@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      chart: {
+        Row: {
+          candle_timestamp: string
+          close: number
+          coin_id: string
+          high: number
+          id: number
+          low: number
+          open: number
+          volume: number
+        }
+        Insert: {
+          candle_timestamp?: string
+          close: number
+          coin_id: string
+          high: number
+          id?: number
+          low: number
+          open: number
+          volume: number
+        }
+        Update: {
+          candle_timestamp?: string
+          close?: number
+          coin_id?: string
+          high?: number
+          id?: number
+          low?: number
+          open?: number
+          volume?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chart_coin_id_fkey"
+            columns: ["coin_id"]
+            isOneToOne: false
+            referencedRelation: "coins"
+            referencedColumns: ["market_id"]
+          },
+        ]
+      }
+      coins: {
+        Row: {
+          english_name: string | null
+          korean_name: string
+          market_id: string
+        }
+        Insert: {
+          english_name?: string | null
+          korean_name: string
+          market_id: string
+        }
+        Update: {
+          english_name?: string | null
+          korean_name?: string
+          market_id?: string
+        }
+        Relationships: []
+      }
+      market_orders: {
+        Row: {
+          created_at: string | null
+          id: number
+          market: string
+          orderbook_units: Json
+          timestamp: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          market: string
+          orderbook_units: Json
+          timestamp: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          market?: string
+          orderbook_units?: Json
+          timestamp?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -40,6 +126,122 @@ export type Database = {
           user_name?: string
         }
         Relationships: []
+      }
+      trade: {
+        Row: {
+          amount: number
+          coin_id: string
+          created_at: string
+          id: number
+          price: number
+          total_krw: number
+          trade_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          coin_id: string
+          created_at: string
+          id?: number
+          price: number
+          total_krw: number
+          trade_type: string
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          coin_id?: string
+          created_at?: string
+          id?: number
+          price?: number
+          total_krw?: number
+          trade_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trade_coin_id_fkey"
+            columns: ["coin_id"]
+            isOneToOne: false
+            referencedRelation: "coins"
+            referencedColumns: ["market_id"]
+          },
+          {
+            foreignKeyName: "trade_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: number
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: number
+          transaction_type: string
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: number
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallet: {
+        Row: {
+          amount: number
+          coin_id: string
+          id: number
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          coin_id: string
+          id?: number
+          user_id?: string
+        }
+        Update: {
+          amount?: number
+          coin_id?: string
+          id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_coin_id_fkey"
+            columns: ["coin_id"]
+            isOneToOne: false
+            referencedRelation: "coins"
+            referencedColumns: ["market_id"]
+          },
+          {
+            foreignKeyName: "wallet_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
