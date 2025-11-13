@@ -1,17 +1,43 @@
 "use client";
 
-import { useGetMarketOrder } from "@/entities";
+import { useEffect } from "react";
+
+import { syncMarketOrderAPI, useMarketOrderRealtime } from "@/entities";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared";
+import { useMutation } from "@tanstack/react-query";
 
 export const OrderTable = () => {
-  const { data: orderData } = useGetMarketOrder("KRW-WAXP");
+  const market = "KRW-WAXP";
+  const { data: marketOrder, isLoading, error } = useMarketOrderRealtime(market);
 
-  // 배열의 첫 번째 요소 가져오기
-  const marketOrder = orderData?.[0];
+  const { mutate: syncData } = useMutation({
+    mutationFn: () => syncMarketOrderAPI(market),
+    onError: (error) => {
+      console.error("Sync failed:", error);
+    },
+    onSuccess: () => {
+      console.log("Sync successful");
+    },
+  });
 
-  console.log("Market Order Data:", marketOrder);
+  // 주기적으로 Upbit 데이터를 Supabase에 동기화
+  useEffect(() => {
+    // 즉시 실행
+    syncData();
 
-  if (!marketOrder) {
+    // 1초마다 동기화
+    const interval = setInterval(() => {
+      syncData();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [market, syncData]);
+
+  if (error) {
+    return <div className='p-4 text-center text-red-500'>Error: {error.message}</div>;
+  }
+
+  if (isLoading || !marketOrder) {
     return <div className='p-4 text-center'>Loading...</div>;
   }
 
