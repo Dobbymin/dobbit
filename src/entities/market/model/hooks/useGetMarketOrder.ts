@@ -7,6 +7,6 @@ export const useGetMarketOrder = (markets: string) => {
     queryKey: ["market-order", markets],
     queryFn: () => marketOrderAPI(markets),
 
-    refetchInterval: 1000,
+    refetchInterval: 10000,
   });
 };
