@@ -62,8 +62,6 @@ export const useMarketOrderRealtime = (market: string) => {
           filter: `market=eq.${market}`,
         },
         (payload) => {
-          console.log("Realtime update:", payload);
-
           if (payload.eventType === "INSERT" || payload.eventType === "UPDATE") {
             const newData = payload.new as {
               market: string;
