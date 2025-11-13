@@ -21,3 +21,19 @@ export const marketOrderAPI = async (markets: string): Promise<MarketOrderRespon
   const data = await response.json();
   return data;
 };
+
+export const syncMarketOrderAPI = async (market: string): Promise<MarketOrderResponse[]> => {
+  const response = await fetch("/api/market-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ market }),
+  });
+
+  if (!response.ok) {
+    console.error("Sync failed:", response.status, response.statusText);
+    throw new Error("Failed to fetch sync market order data");
+  }
+
+  const data = await response.json();
+  return data;
+};
