@@ -6,11 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getTickerAPI } from "@/features/home/apis";
 
+import { createClient as createSupabaseBrowserClient } from "@/shared/utils/supabase";
+
 import { getWalletAPI } from "../apis";
 import { getTradesAPI } from "../apis/trades.api";
 import { useWalletStore } from "../store";
 import { computeCostBasis } from "../utils/aggregate-trades";
-import { createClient as createSupabaseBrowserClient } from "@/shared/utils/supabase";
 
 /**
  * 지갑과 시세를 실시간으로 동기화하는 hook
