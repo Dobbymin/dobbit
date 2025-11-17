@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { SignupSchemaType, signupAPI, signupSchema } from "@/entities";
+import { SignupSchemaType, createProfileAPI, signupAPI, signupSchema } from "@/entities";
 import { Button, Form, ROUTER_PATH, Spinner } from "@/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -25,10 +25,30 @@ export const SignupForm = () => {
     mode: "onChange",
   });
 
-  const onSuccess = () => {
-    toast.success("회원가입 성공!");
-    router.push(ROUTER_PATH.LOGIN);
-    form.reset();
+  const onSuccess = async (data: Awaited<ReturnType<typeof signupAPI>>) => {
+    try {
+      const user = data.user;
+      const userEmailId = form.getValues("userEmail");
+
+      if (!user) {
+        toast.error("회원가입은 되었지만 사용자 정보를 확인할 수 없습니다.");
+        return;
+      }
+
+      await createProfileAPI({
+        id: user.id,
+        email: user.email ?? `${userEmailId}@dobbit.com`,
+        userName: userEmailId,
+        nickname: userEmailId,
+      });
+
+      toast.success("회원가입 성공! 프로필이 생성되었습니다.");
+      router.push(ROUTER_PATH.LOGIN);
+      form.reset();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "프로필 생성 중 오류가 발생했습니다.";
+      toast.error(message);
+    }
   };
 
   const { mutate: signupMutate, isPending } = useMutation({

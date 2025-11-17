@@ -1,108 +1,41 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared";
 
+import { useRealtimeWallet } from "../hooks";
+import { useWalletStore } from "../store";
+
 export const HeldAssetsListSection = () => {
-  const assetList = [
-    {
-      name: "이더리움",
-      symbol: "ETH",
-      quantity: "0.00001189",
-      buyPrice: "30,201,000",
-      currentPrice: "148,200",
-      profitRate: "+125",
-      profitAmount: "+148,200",
-      isProfit: true,
-    },
-    {
-      name: "리플",
-      symbol: "XRP",
-      quantity: "1,250.50",
-      buyPrice: "1,500,000",
-      currentPrice: "1,680,000",
-      profitRate: "+12",
-      profitAmount: "+180,000",
-      isProfit: true,
-    },
-    {
-      name: "비트코인",
-      symbol: "BTC",
-      quantity: "0.0025",
-      buyPrice: "100,000,000",
-      currentPrice: "95,000,000",
-      profitRate: "-5",
-      profitAmount: "-5,000,000",
-      isProfit: false,
-    },
-    {
-      name: "카르다노",
-      symbol: "ADA",
-      quantity: "5,000",
-      buyPrice: "2,500,000",
-      currentPrice: "2,750,000",
-      profitRate: "+10",
-      profitAmount: "+250,000",
-      isProfit: true,
-    },
-    {
-      name: "폴카닷",
-      symbol: "DOT",
-      quantity: "150",
-      buyPrice: "1,200,000",
-      currentPrice: "1,080,000",
-      profitRate: "-10",
-      profitAmount: "-120,000",
-      isProfit: false,
-    },
-    {
-      name: "솔라나",
-      symbol: "SOL",
-      quantity: "10.5",
-      buyPrice: "2,100,000",
-      currentPrice: "2,520,000",
-      profitRate: "+20",
-      profitAmount: "+420,000",
-      isProfit: true,
-    },
-    {
-      name: "체인링크",
-      symbol: "LINK",
-      quantity: "200",
-      buyPrice: "3,000,000",
-      currentPrice: "2,850,000",
-      profitRate: "-5",
-      profitAmount: "-150,000",
-      isProfit: false,
-    },
-    {
-      name: "라이트코인",
-      symbol: "LTC",
-      quantity: "15",
-      buyPrice: "1,500,000",
-      currentPrice: "1,650,000",
-      profitRate: "+10",
-      profitAmount: "+150,000",
-      isProfit: true,
-    },
-    {
-      name: "이오스",
-      symbol: "EOS",
-      quantity: "800",
-      buyPrice: "800,000",
-      currentPrice: "720,000",
-      profitRate: "-10",
-      profitAmount: "-80,000",
-      isProfit: false,
-    },
-    {
-      name: "스텔라루멘",
-      symbol: "XLM",
-      quantity: "10,000",
-      buyPrice: "1,000,000",
-      currentPrice: "1,150,000",
-      profitRate: "+15",
-      profitAmount: "+150,000",
-      isProfit: true,
-    },
-  ];
+  // 실시간 지갑 데이터 구독
+  useRealtimeWallet();
+
+  const { wallets, tickerMap, getCoinEvaluation, getCoinCostBasis } = useWalletStore();
+
+  // KRW를 제외한 코인만 표시
+  const coinWallets = wallets.filter((w) => w.coin_id !== "KRW");
+
+  // 실제 데이터를 표시용 형식으로 변환
+  const assetList = coinWallets.map((wallet) => {
+    const ticker = tickerMap[wallet.coin_id];
+    const evaluation = getCoinEvaluation(wallet.coin_id, wallet.amount);
+
+    // 거래 집계에서 코인별 원가 총액
+    const buyTotalAmount = getCoinCostBasis(wallet.coin_id);
+    const profitAmount = evaluation - buyTotalAmount;
+    const profitRate = buyTotalAmount > 0 ? (profitAmount / buyTotalAmount) * 100 : 0;
+
+    // 마켓 코드에서 코인 심볼 추출 (예: "KRW-BTC" -> "BTC")
+    const symbol = wallet.coin_id.replace("KRW-", "");
+
+    return {
+      name: ticker?.market || wallet.coin_id,
+      symbol,
+      quantity: wallet.amount.toFixed(8),
+      buyPrice: buyTotalAmount.toLocaleString("ko-KR"),
+      currentPrice: evaluation.toLocaleString("ko-KR"),
+      profitRate: `${profitRate >= 0 ? "+" : ""}${profitRate.toFixed(2)}`,
+      profitAmount: `${profitAmount >= 0 ? "+" : ""}${profitAmount.toLocaleString("ko-KR")}`,
+      isProfit: profitAmount >= 0,
+    };
+  });
 
   return (
     <section className='mt-6'>

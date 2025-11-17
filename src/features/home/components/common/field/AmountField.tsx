@@ -4,7 +4,11 @@ import { OrderSchemaType } from "@/entities";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/shared";
 import { useFormContext } from "react-hook-form";
 
-export const AmountField = () => {
+type AmountFieldProps = {
+  onValueChange?: (value: number) => void;
+};
+
+export const AmountField = ({ onValueChange }: AmountFieldProps) => {
   const form = useFormContext<OrderSchemaType>();
   return (
     <FormField
@@ -17,7 +21,16 @@ export const AmountField = () => {
             <p className='text-[10px] font-bold text-text-dark'>(WAXP)</p>
           </FormLabel>
           <FormControl>
-            <Input {...field} placeholder='수량을 입력하세요' />
+            <Input
+              {...field}
+              type='number'
+              placeholder='수량을 입력하세요'
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                field.onChange(value);
+                onValueChange?.(value);
+              }}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

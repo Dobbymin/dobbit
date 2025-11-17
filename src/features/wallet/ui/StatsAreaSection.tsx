@@ -1,15 +1,50 @@
 import { Separator, Table, TableBody, TableCell, TableRow } from "@/shared";
 
 import { TableItem } from "../components";
+import { useRealtimeWallet } from "../hooks";
+import { useWalletStore } from "../store";
 
 export const StatsAreaSection = () => {
+  // 실시간 지갑 데이터 구독
+  useRealtimeWallet();
+
+  // Zustand store에서 계산된 값 가져오기
+  const {
+    wallets,
+    getTotalEvaluation,
+    getTotalCoinEvaluation,
+    getTotalPurchase,
+    getTotalProfitLoss,
+    getTotalProfitRate,
+  } = useWalletStore();
+
+  // KRW 잔고
+  const krwWallet = wallets.find((w) => w.coin_id === "KRW");
+  const heldKRW = krwWallet?.amount || 0;
+
+  // 총 평가액 (보유 KRW + 코인 평가금액)
+  const totalEvaluation = getTotalEvaluation();
+
+  // 총 매수 (현재 보유 코인의 원가 합계)
+  const totalPurchase = getTotalPurchase();
+
+  // 총 평가 손익
+  const totalProfitLoss = getTotalProfitLoss();
+
+  // 총 평가 수익률
+  const totalProfitRate = getTotalProfitRate();
+
+  // 총 보유 자산 = 보유 KRW + 코인 평가금액
+  const totalCoinEval = getTotalCoinEvaluation();
+  const totalAssets = heldKRW + totalCoinEval;
+
   const data = {
-    heldKRW: "100,000",
-    totalAssets: "1,000",
-    totalBuy: "1,000",
-    totalProfitLoss: "+10,000",
-    totalEvaluation: "1,000",
-    totalProfitRate: "+30.21",
+    heldKRW: heldKRW.toLocaleString("ko-KR"),
+    totalAssets: totalAssets.toLocaleString("ko-KR"),
+    totalBuy: totalPurchase.toLocaleString("ko-KR"),
+    totalProfitLoss: `${totalProfitLoss >= 0 ? "+" : ""}${totalProfitLoss.toLocaleString("ko-KR")}`,
+    totalEvaluation: totalEvaluation.toLocaleString("ko-KR"),
+    totalProfitRate: `${totalProfitRate >= 0 ? "+" : ""}${totalProfitRate.toFixed(2)}`,
   };
 
   return (

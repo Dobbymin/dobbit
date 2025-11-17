@@ -25,6 +25,7 @@ export const OrderTable = () => {
     // 즉시 실행
     syncData();
 
+    // TODO: 구현 후 다시 1000 으로 수정
     // 1초마다 동기화
     const interval = setInterval(() => {
       syncData();
