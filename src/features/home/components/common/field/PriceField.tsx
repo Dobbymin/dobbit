@@ -4,7 +4,11 @@ import { OrderSchemaType } from "@/entities";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/shared";
 import { useFormContext } from "react-hook-form";
 
-export const PriceField = () => {
+type PriceFieldProps = {
+  onValueChange?: (value: number) => void;
+};
+
+export const PriceField = ({ onValueChange }: PriceFieldProps) => {
   const form = useFormContext<OrderSchemaType>();
   return (
     <FormField
@@ -17,7 +21,16 @@ export const PriceField = () => {
             <p className='text-[10px] font-bold text-text-dark'>(KRW)</p>
           </FormLabel>
           <FormControl>
-            <Input {...field} placeholder='가격을 입력하세요' />
+            <Input
+              {...field}
+              type='number'
+              placeholder='가격을 입력하세요'
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0;
+                field.onChange(value);
+                onValueChange?.(value);
+              }}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
