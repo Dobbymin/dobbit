@@ -35,10 +35,10 @@ export const Header = () => {
               Portfolio
             </Link>
             <Link
-              href={ROUTER_PATH.SETTINGS}
+              href={ROUTER_PATH.SETTING}
               className='text-sm leading-normal font-medium text-text-muted-dark hover:text-white'
             >
-              Settings
+              Setting
             </Link>
           </div>
         </nav>
