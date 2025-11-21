@@ -1,13 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { UserRound, Wallet } from "lucide-react";
-
 import Logo from "@/shared/assets/logo.webp";
 
 import { ROUTER_PATH } from "../../../constants";
 import { LoginButton } from "../../common";
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui";
 
 export const Header = () => {
   return (
