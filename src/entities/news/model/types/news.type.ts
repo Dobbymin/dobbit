@@ -42,3 +42,19 @@ export type AnalysisItem = {
     confidence: number;
   }[];
 };
+
+export interface PaginatedNewsResponse {
+  newsDate: string;
+  totalNews: number;
+  investmentIndex: number;
+  summary: Summary;
+  keywords: string[];
+  newsAnalysis: NewsAnalysisItem[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
