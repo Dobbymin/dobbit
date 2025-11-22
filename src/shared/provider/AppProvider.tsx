@@ -10,7 +10,7 @@ export const AppProvider = ({ children }: Props) => {
   return (
     <QueryProvider>
       <AuthProvider>{children}</AuthProvider>
-      <Toaster />
+      <Toaster richColors position='top-center' />
     </QueryProvider>
   );
 };
