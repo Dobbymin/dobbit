@@ -1,14 +1,15 @@
 "use client";
 
-import { useGetSession } from "@/shared";
+import { useGetSession, useIsSessionLoaded } from "@/shared";
 
 export const useUserInfo = () => {
   const session = useGetSession();
+  const isLoaded = useIsSessionLoaded();
 
   const userAvatarUrl = session?.user?.user_metadata?.avatar_url || "";
   const userNickname = session?.user?.user_metadata?.nickname || "Unknown";
   const userEmail = session?.user?.email || "";
   const lastUpdated = session?.user?.updated_at || "";
 
-  return { userAvatarUrl, userNickname, userEmail, lastUpdated };
+  return { userAvatarUrl, userNickname, userEmail, lastUpdated, isLoaded };
 };
