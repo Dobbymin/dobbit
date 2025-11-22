@@ -44,3 +44,4 @@ next-env.d.ts
 .env.local
 /.vscode
 /docs
+/.github/copilot-instructions.md
