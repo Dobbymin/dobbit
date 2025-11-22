@@ -5,7 +5,7 @@ export const ROUTER_PATH = {
   DASHBOARD: "/dashboard",
   AUTO_TRADE: "/auto-trade",
   TRADE: "/trade",
-  PORTFOLIO: "/portfolio",
+  NEWS: "/news",
   SETTING: "/setting",
   WALLET: "/wallet",
 };
