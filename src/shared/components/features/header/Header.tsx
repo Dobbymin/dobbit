@@ -1,13 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { UserRound, Wallet } from "lucide-react";
-
 import Logo from "@/shared/assets/logo.webp";
 
 import { ROUTER_PATH } from "../../../constants";
 import { LoginButton } from "../../common";
-import { Avatar, AvatarFallback, AvatarImage } from "../../ui";
 
 export const Header = () => {
   return (
@@ -35,10 +32,10 @@ export const Header = () => {
               Portfolio
             </Link>
             <Link
-              href={ROUTER_PATH.SETTINGS}
+              href={ROUTER_PATH.SETTING}
               className='text-sm leading-normal font-medium text-text-muted-dark hover:text-white'
             >
-              Settings
+              Setting
             </Link>
           </div>
         </nav>

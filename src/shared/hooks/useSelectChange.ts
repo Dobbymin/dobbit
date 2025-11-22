@@ -26,7 +26,7 @@ export const useSelectChange = () => {
         console.error("로그아웃 에러:", error);
       }
     } else if (value === "setting") {
-      router.push(ROUTER_PATH.SETTINGS);
+      router.push(ROUTER_PATH.SETTING);
     }
   };
 

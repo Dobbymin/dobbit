@@ -9,6 +9,7 @@ export * from "./input";
 export * from "./label";
 export * from "./select";
 export * from "./separator";
+export * from "./skeleton";
 export * from "./sonner";
 export * from "./spinner";
 export * from "./table";

@@ -6,6 +6,6 @@ export const ROUTER_PATH = {
   AUTO_TRADE: "/auto-trade",
   TRADE: "/trade",
   PORTFOLIO: "/portfolio",
-  SETTINGS: "/settings",
+  SETTING: "/setting",
   WALLET: "/wallet",
 };
