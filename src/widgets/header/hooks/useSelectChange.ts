@@ -3,9 +3,8 @@
 import { useRouter } from "next/navigation";
 
 import { logoutAPI, useClearAuth } from "@/entities";
+import { ROUTER_PATH } from "@/shared";
 import { toast } from "sonner";
-
-import { ROUTER_PATH } from "../constants";
 
 export const useSelectChange = () => {
   const router = useRouter();
@@ -15,6 +14,7 @@ export const useSelectChange = () => {
     if (value === "logout") {
       try {
         await logoutAPI();
+
         clearAccessToken(); // localStorage에서 accessToken 제거
 
         toast.success("로그아웃 되었습니다.");

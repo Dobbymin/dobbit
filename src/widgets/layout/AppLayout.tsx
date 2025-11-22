@@ -9,7 +9,6 @@ export const AppLayout = ({ children }: Props) => {
     <div className='flex min-h-screen w-full flex-col'>
       <Header />
       <main className='flex w-full flex-1 justify-center'>{children}</main>
-      <footer></footer>
     </div>
   );
 };

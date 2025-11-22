@@ -3,22 +3,23 @@
 import Link from "next/link";
 
 import { useIsAuth } from "@/entities";
-import { UserRound, Wallet } from "lucide-react";
-
-import { ROUTER_PATH } from "../../../constants";
-import { useGetSession, useSelectChange } from "../../../hooks";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  ROUTER_PATH,
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-} from "../../ui";
+  useGetSession,
+} from "@/shared";
+import { UserRound, Wallet } from "lucide-react";
 
-export const LoginButton = () => {
+import { useSelectChange } from "../hooks";
+
+export const UserMenuButton = () => {
   const session = useGetSession();
   const { isAuthenticated, isLoading } = useIsAuth();
 
