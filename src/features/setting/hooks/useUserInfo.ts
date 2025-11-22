@@ -7,7 +7,7 @@ export const useUserInfo = () => {
   const isLoaded = useIsSessionLoaded();
 
   const userAvatarUrl = session?.user?.user_metadata?.avatar_url || "";
-  const userNickname = session?.user?.user_metadata?.nickname || "Unknown";
+  const userNickname = session?.user?.user_metadata?.nickname || "";
   const userEmail = session?.user?.email || "";
   const lastUpdated = session?.user?.updated_at || "";
 

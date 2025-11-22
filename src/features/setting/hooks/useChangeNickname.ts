@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -16,6 +16,11 @@ export const useChangeNickname = ({ userNickname }: Props) => {
   const [inputValue, setInputValue] = useState(userNickname);
   const supabase = createClient();
 
+  // userNickname이 변경되면 inputValue 동기화 (세션 새로고침 후)
+  useEffect(() => {
+    setInputValue(userNickname);
+  }, [userNickname]);
+
   const onChangeNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
@@ -30,11 +35,8 @@ export const useChangeNickname = ({ userNickname }: Props) => {
       toast.success("닉네임이 변경되었습니다.");
       setFieldState("view");
 
-      // Supabase 세션 강제 갱신
+      // Supabase 세션 강제 갱신 (AuthProvider가 감지하여 Zustand 스토어 업데이트)
       await supabase.auth.refreshSession();
-
-      // 페이지 새로고침으로 UI 갱신
-      window.location.reload();
     },
   });
 
