@@ -23,8 +23,8 @@ export const MetaDataBox = ({ keywords, source, isLoading }: Props) => {
   return (
     <div className='flex items-center justify-between'>
       <div className='flex gap-2'>
-        {keywords.map((k) => (
-          <span key={k} className='text-xs text-text-muted-dark'>
+        {keywords.map((k, index) => (
+          <span key={`${k}-${index}`} className='text-xs text-text-muted-dark'>
             # {k}
           </span>
         ))}
