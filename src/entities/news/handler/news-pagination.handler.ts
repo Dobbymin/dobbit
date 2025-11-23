@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+
 import {
   AnalysisAPIResponseSchema,
   NewsAPIResponseSchema,
@@ -9,9 +11,10 @@ import {
 } from "../model";
 
 const ITEMS_PER_PAGE = 5;
+const REVALIDATE_TIME = 300; // 5분 (초 단위)
 
-export const newsPaginationHandler = async (page: number = 0): Promise<PaginatedNewsResponse> => {
-  try {
+const getMergedNewsData = unstable_cache(
+  async () => {
     // 두 API를 병렬로 호출
     const [newsResponse, analysisResponse] = await Promise.all([newsAPI(), analysisAPI()]);
 
@@ -31,7 +34,6 @@ export const newsPaginationHandler = async (page: number = 0): Promise<Paginated
 
     // newsData와 analysisData.newsAnalysis를 newsId 기준으로 매칭
     const combinedNewsAnalysis: NewsAnalysisItem[] = newsData.map((news) => {
-      // analysisMap에서 같은 newsId를 가진 분석 찾기
       const analysis: NewsAnalysisData = analysisMap.get(news.id) || {
         newsId: news.id,
         reason: "",
@@ -53,21 +55,44 @@ export const newsPaginationHandler = async (page: number = 0): Promise<Paginated
       };
     });
 
+    // 전체 데이터 반환 (페이지네이션 되지 않음)
+    return {
+      meta: {
+        newsDate: analysisData.date,
+        totalNews: analysisData.totalNews,
+        investmentIndex: analysisData.investmentIndex,
+        summary: analysisData.summary,
+        keywords: analysisData.keywords,
+      },
+      items: combinedNewsAnalysis,
+    };
+  },
+  ["combined-news-data"],
+  { revalidate: REVALIDATE_TIME, tags: ["news"] },
+);
+
+export const newsPaginationHandler = async (page: number = 0): Promise<PaginatedNewsResponse> => {
+  try {
+    // 캐시된 전체 데이터를 가져옴 (API 호출 X, 메모리/파일시스템에서 로드 O)
+    const cachedData = await getMergedNewsData();
+
+    const { items, meta } = cachedData;
+
     // 페이지네이션 계산
-    const totalItems = combinedNewsAnalysis.length;
+    const totalItems = items.length;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
     const startIndex = page * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
 
     // 현재 페이지의 데이터만 추출
-    const paginatedNewsAnalysis = combinedNewsAnalysis.slice(startIndex, endIndex);
+    const paginatedNewsAnalysis = items.slice(startIndex, endIndex);
 
     return {
-      newsDate: analysisData.date,
-      totalNews: analysisData.totalNews,
-      investmentIndex: analysisData.investmentIndex,
-      summary: analysisData.summary,
-      keywords: analysisData.keywords,
+      newsDate: meta.newsDate,
+      totalNews: meta.totalNews,
+      investmentIndex: meta.investmentIndex,
+      summary: meta.summary,
+      keywords: meta.keywords,
       newsAnalysis: paginatedNewsAnalysis,
       pagination: {
         currentPage: page,
@@ -78,7 +103,6 @@ export const newsPaginationHandler = async (page: number = 0): Promise<Paginated
       },
     };
   } catch (error) {
-    // Zod 검증 실패 또는 기타 에러 처리
     if (error instanceof Error) {
       console.error("News pagination handler error:", error.message);
       throw new Error(`Failed to process news data: ${error.message}`);
