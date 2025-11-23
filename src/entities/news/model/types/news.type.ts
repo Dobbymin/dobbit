@@ -28,19 +28,21 @@ export type NewsItem = {
   scrapedAt: string;
 };
 
+export type NewsAnalysisData = {
+  newsId: number;
+  reason: string;
+  keywords: string[];
+  sentiment: Sentiment;
+  confidence: number;
+};
+
 export type AnalysisItem = {
   date: string;
   totalNews: number;
   investmentIndex: number;
   summary: Summary;
   keywords: string[];
-  newsAnalysis: {
-    newsId: number;
-    reason: string;
-    keywords: string[];
-    sentiment: Sentiment;
-    confidence: number;
-  }[];
+  newsAnalysis: NewsAnalysisData[];
 };
 
 export interface PaginatedNewsResponse {
