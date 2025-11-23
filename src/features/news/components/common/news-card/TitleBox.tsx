@@ -1,4 +1,4 @@
-import { Badge, Button, Skeleton } from "@/shared";
+import { Badge, Button, Skeleton, cn } from "@/shared";
 import { ExternalLink } from "lucide-react";
 
 type Props = {
@@ -40,7 +40,7 @@ export const TitleBox = ({ title, url, confidence, config, isLoading }: Props) =
     <div className='flex items-start justify-between gap-4'>
       <div className='flex flex-1 flex-col gap-2'>
         <div className='flex items-center gap-2'>
-          <Badge className={`${config.bg} ${config.color} gap-1 border-0 px-2 py-0.5`}>
+          <Badge className={cn("gap-1 border-0 px-2 py-0.5", config.bg, config.color)}>
             {config.icon}
             {config.label}
           </Badge>

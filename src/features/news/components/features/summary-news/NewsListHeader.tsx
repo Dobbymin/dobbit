@@ -1,4 +1,4 @@
-import { Skeleton } from "@/shared";
+import { Skeleton, cn } from "@/shared";
 
 type Props = {
   newsDate: string;
@@ -26,7 +26,7 @@ export const NewsListHeader = ({ newsDate, totalNews, investmentIndex, isLoading
           <Skeleton className='h-9 w-26' />
         ) : (
           <div className='flex items-end justify-end gap-2'>
-            <span className={`text-3xl font-bold ${investmentIndex >= 50 ? "text-positive" : "text-negative"}`}>
+            <span className={cn("text-3xl font-bold", investmentIndex >= 50 ? "text-positive" : "text-negative")}>
               {investmentIndex}
             </span>
             <span className='pb-1 text-sm text-text-muted-dark'>/ 100</span>
