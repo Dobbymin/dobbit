@@ -1,4 +1,4 @@
-import { Skeleton } from "@/shared";
+import { Skeleton, cn } from "@/shared";
 
 type Props = {
   reason: string;
@@ -21,7 +21,7 @@ export const ReasonBox = ({ reason, config, isLoading }: Props) => {
   }
 
   return (
-    <div className={`flex flex-col gap-2 border px-4 py-3 ${config.border} ${config.bg} bg-opacity-5`}>
+    <div className={cn("bg-opacity-5 flex flex-col gap-2 border px-4 py-3", config.border, config.bg)}>
       <p className='text-xs font-bold tracking-wider text-inherit uppercase opacity-70'>AI Insight</p>
       <p className='text-sm leading-relaxed font-medium text-white/90'>{reason}</p>
     </div>
