@@ -1,4 +1,5 @@
 export * from "./avatar";
+export * from "./badge";
 export * from "./button";
 export * from "./card";
 export * from "./chart";
@@ -14,3 +15,4 @@ export * from "./sonner";
 export * from "./spinner";
 export * from "./table";
 export * from "./textarea";
+export * from "./progress";
