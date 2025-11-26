@@ -1,4 +1,4 @@
-name: lint & Build Test
+name: Formatting Test
 
 on:
   pull_request:
