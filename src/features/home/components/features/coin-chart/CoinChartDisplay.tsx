@@ -375,16 +375,7 @@ const options: ApexOptions = {
 
 export const CoinChartDisplay = () => {
   return (
-    <div className='w-full rounded-lg bg-surface-dark p-4'>
-      <div className='mb-4 flex items-center justify-between'>
-        <div>
-          <h2 className='text-lg font-bold text-white'>BTC/KRW</h2>
-          <div className='flex items-center gap-2 text-sm'>
-            <span className='text-white'>₩166,400,000</span>
-            <span className='text-increase'>▲ 14,800,000 (+9.76%)</span>
-          </div>
-        </div>
-      </div>
+    <div className='w-full bg-surface-dark p-4'>
       <ReactApexChart options={options} series={series} type='candlestick' height={500} />
     </div>
   );
