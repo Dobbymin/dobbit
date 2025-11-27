@@ -2,6 +2,8 @@ import { UPBIT_URL } from "@/shared";
 
 export interface MarketAllItem {
   market: string;
+  signed_change_price: number;
+  trade_price: number;
   korean_name: string;
   english_name: string;
   market_warning: string;

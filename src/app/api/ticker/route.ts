@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 
+import { toDisplayMarket, toUpbitMarketsCSV } from "@/entities";
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const markets = searchParams.get("markets") || "KRW-WAXP";
+    const marketsDisplay = searchParams.get("markets") || "WAXP/KRW";
+    const markets = toUpbitMarketsCSV(marketsDisplay);
 
     // Upbit API로 현재가 조회
     const response = await fetch(`https://api.upbit.com/v1/ticker?markets=${markets}`, {
@@ -17,7 +20,8 @@ export async function GET(request: Request) {
       throw new Error("Failed to fetch ticker from Upbit");
     }
 
-    const data = await response.json();
+    const raw = await response.json();
+    const data = Array.isArray(raw) ? raw.map((t) => ({ ...t, market: toDisplayMarket(t.market as string) })) : raw;
 
     return NextResponse.json({ success: true, data }, { status: 200 });
   } catch (error) {

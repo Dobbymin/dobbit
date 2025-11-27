@@ -32,7 +32,7 @@ export interface TickerResponse {
   data: TickerData[];
 }
 
-export const getTickerAPI = async (markets: string = "KRW-WAXP"): Promise<TickerResponse> => {
+export const getTickerAPI = async (markets: string = "WAXP/KRW"): Promise<TickerResponse> => {
   const response = await fetch(`/api/ticker?markets=${markets}`, {
     cache: "no-store",
   });

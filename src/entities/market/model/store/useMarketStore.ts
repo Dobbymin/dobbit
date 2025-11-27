@@ -10,7 +10,7 @@ export type MarketState = {
 };
 
 const initialState: MarketState = {
-  market: "KRW-BTC",
+  market: "BTC/KRW",
   koreanName: "비트코인",
   changeRate: 0,
   tradePrice: 0,
@@ -29,7 +29,7 @@ export const useMarketStore = create(
           }),
         clearMarket: () =>
           set((state) => {
-            state.market = "KRW-BTC";
+            state.market = "BTC/KRW";
             state.koreanName = "비트코인";
             state.changeRate = 0;
             state.tradePrice = 0;

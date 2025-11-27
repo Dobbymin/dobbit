@@ -22,8 +22,8 @@ export const HeldAssetsListSection = () => {
     const profitAmount = evaluation - buyTotalAmount;
     const profitRate = buyTotalAmount > 0 ? (profitAmount / buyTotalAmount) * 100 : 0;
 
-    // 마켓 코드에서 코인 심볼 추출 (예: "KRW-BTC" -> "BTC")
-    const symbol = wallet.coin_id.replace("KRW-", "");
+    // 마켓 코드에서 코인 심볼 추출 (예: "BTC/KRW" -> "BTC")
+    const symbol = wallet.coin_id.includes("/") ? wallet.coin_id.split("/")[0] : wallet.coin_id;
 
     return {
       name: ticker?.market || wallet.coin_id,

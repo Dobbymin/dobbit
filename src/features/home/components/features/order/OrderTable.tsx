@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useMutation } from "@tanstack/react-query";
 
 export const OrderTable = () => {
-  const market = "KRW-WAXP";
+  const market = "WAXP/KRW";
   const { data: marketOrder, isLoading, error } = useMarketOrderRealtime(market);
 
   const { mutate: syncData } = useMutation({

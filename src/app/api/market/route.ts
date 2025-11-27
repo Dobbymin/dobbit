@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { marketAllAPI, marketInfoHandler } from "@/entities";
+import { marketAllAPI, marketInfoHandler, toDisplayMarket } from "@/entities";
 
 /**
  * 마켓 정보 조회 API
@@ -15,7 +15,9 @@ export async function GET(request: NextRequest) {
     // type=list인 경우 마켓 목록만 반환
     if (type === "list") {
       const markets = await marketAllAPI();
-      const krwMarkets = markets.filter((market) => market.market.startsWith("KRW-"));
+      const krwMarkets = markets
+        .filter((market) => market.market.startsWith("KRW-"))
+        .map((m) => ({ ...m, market: toDisplayMarket(m.market) }));
       return NextResponse.json({ success: true, data: krwMarkets }, { status: 200 });
     }
 

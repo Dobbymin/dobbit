@@ -18,7 +18,7 @@ import { AmountField, CoinSelect, PriceField, ToggleButtonGroup, TotalField } fr
 
 export const OrderForm = () => {
   const [activeTab, setActiveTab] = useState<TabType>("매수");
-  const [selectedCoin, setSelectedCoin] = useState<string>("KRW-WAXP");
+  const [selectedCoin, setSelectedCoin] = useState<string>("WAXP/KRW");
 
   // 마켓 목록 조회
   const { data: marketsData } = useQuery({
@@ -134,7 +134,7 @@ export const OrderForm = () => {
           <div className='flex items-center gap-2'>
             <p className='font-bold'>{activeTab === "매수" ? krwBalance.toLocaleString() : coinBalance.toFixed(8)}</p>
             <p className='text-xs font-semibold text-text-dark'>
-              {activeTab === "매수" ? "KRW" : selectedCoin.replace("KRW-", "")}
+              {activeTab === "매수" ? "KRW" : selectedCoin.includes("/") ? selectedCoin.split("/")[0] : selectedCoin}
             </p>
           </div>
         </div>

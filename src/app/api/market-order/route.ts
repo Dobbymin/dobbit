@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { marketOrderAPI } from "@/entities";
+import { marketOrderAPI, toDisplayMarket, toUpbitMarket } from "@/entities";
 import { Json, createClient } from "@/shared";
 
 export async function POST(request: NextRequest) {
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Upbit API에서 데이터 가져오기
-    const upbitData = await marketOrderAPI(market);
+    const upbitData = await marketOrderAPI(toUpbitMarket(market));
     const marketData = upbitData[0];
 
     if (!marketData) {
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       .from("market_orders")
       .upsert(
         {
-          market: marketData.market,
+          market: toDisplayMarket(marketData.market),
           orderbook_units: marketData.orderbook_units as unknown as Json,
           timestamp: marketData.timestamp,
         },
