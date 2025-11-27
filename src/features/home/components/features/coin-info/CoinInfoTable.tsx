@@ -20,14 +20,7 @@ export const CoinInfoTable = () => {
         </TableHeader>
         <TableBody>
           {marketInfoData?.map((ticker) => (
-            <MarketInfoTable
-              key={ticker.market}
-              market={ticker.market}
-              koreanName={ticker.koreanName}
-              changeRate={ticker.changeRate}
-              tradePrice={ticker.tradePrice}
-              signedChangePrice={ticker.signedChangePrice}
-            />
+            <MarketInfoTable key={ticker.market} {...ticker} />
           ))}
         </TableBody>
       </Table>

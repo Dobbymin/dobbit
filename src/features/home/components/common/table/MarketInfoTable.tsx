@@ -1,4 +1,4 @@
-import { rateColor } from "@/entities";
+import { rateColor, rateFormat } from "@/entities";
 import { TableCell, TableRow, cn } from "@/shared";
 
 import { useMarketInfo } from "../../../hooks";
@@ -27,8 +27,10 @@ export const MarketInfoTable = ({ market, koreanName, tradePrice, changeRate, si
         <p className={cn("font-sans text-xs font-semibold", isActive ? "text-primary" : "text-white")}>{koreanName}</p>
         <p className='font-roboto text-[10px] font-light text-text-muted-dark'>{market}</p>
       </TableCell>
-      <TableCell className='text-xs'>{Number(tradePrice).toLocaleString("ko-KR")}</TableCell>
-      <TableCell className={cn(rateColor(changeRate), "font-roboto text-xs")}>{changeRate.toFixed(2)}%</TableCell>
+      <TableCell className={cn(rateColor(changeRate), "text-xs")}>
+        {Number(tradePrice).toLocaleString("ko-KR")}
+      </TableCell>
+      <TableCell className={cn(rateColor(changeRate), "font-roboto text-xs")}>{rateFormat(changeRate)}</TableCell>
     </TableRow>
   );
 };
