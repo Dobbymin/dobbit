@@ -25,6 +25,7 @@ export const AmountField = ({ onValueChange, coinInfo }: AmountFieldProps) => {
             <Input
               {...field}
               type='number'
+              className='border-none bg-text-light'
               placeholder='수량을 입력하세요'
               onChange={(e) => {
                 const value = parseFloat(e.target.value) || 0;

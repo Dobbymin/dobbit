@@ -25,6 +25,7 @@ export const TotalField = ({ onValueChange }: TotalFieldProps) => {
               {...field}
               type='number'
               placeholder='총액을 입력하세요'
+              className='border-none bg-text-light'
               onChange={(e) => {
                 const value = parseFloat(e.target.value) || 0;
                 field.onChange(value);

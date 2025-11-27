@@ -12,7 +12,7 @@ import { toast } from "sonner";
 
 import { getWalletAPI } from "@/features/wallet/apis";
 
-import { getMarketsAPI, getTickerAPI } from "../../../apis";
+import { getTickerAPI } from "../../../apis";
 import { TabType } from "../../../types";
 import { AmountField, PriceField, ToggleButtonGroup, TotalField } from "../../common";
 

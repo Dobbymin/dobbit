@@ -23,6 +23,7 @@ export const PriceField = ({ onValueChange }: PriceFieldProps) => {
           <FormControl>
             <Input
               {...field}
+              className='border-none bg-text-light'
               type='number'
               placeholder='가격을 입력하세요'
               onChange={(e) => {
