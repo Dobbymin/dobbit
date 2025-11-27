@@ -2,27 +2,26 @@
 
 import { useEffect } from "react";
 
-import { useMarketStore } from "@/entities";
+import { useGetMarket, useUpdateTicker } from "@/entities";
 
 import { ChartControls, CoinChartDisplay, CoinTitle } from "../components";
-import { useGetBTCInfo } from "../hooks";
+import { useRealtimeTicker } from "../hooks";
 
 export const ChartSection = () => {
-  const { data: btcInfo, isSuccess } = useGetBTCInfo();
-
-  const setMarket = useMarketStore((s) => s.setMarket);
+  const { market } = useGetMarket();
+  const { tickerMap } = useRealtimeTicker(market);
+  const updateTicker = useUpdateTicker();
 
   useEffect(() => {
-    if (isSuccess && btcInfo) {
-      setMarket({
-        market: btcInfo.market,
-        koreanName: btcInfo.koreanName,
-        changeRate: btcInfo.changeRate,
-        tradePrice: btcInfo.tradePrice,
-        signedChangePrice: btcInfo.signedChangePrice,
+    const ticker = tickerMap[market];
+    if (ticker) {
+      updateTicker({
+        tradePrice: ticker.trade_price,
+        changeRate: parseFloat((ticker.signed_change_rate * 100).toFixed(2)),
+        signedChangePrice: ticker.signed_change_price,
       });
     }
-  }, [isSuccess, btcInfo, setMarket]);
+  }, [tickerMap, market, updateTicker]);
 
   return (
     <section className='flex w-full flex-col p-4'>

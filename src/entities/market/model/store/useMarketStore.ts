@@ -30,6 +30,12 @@ export const useMarketStore = create(
             state.signedChangePrice = payload.signedChangePrice;
             state.changeRate = payload.changeRate;
           }),
+        updateTicker: (payload: Pick<MarketState, "tradePrice" | "changeRate" | "signedChangePrice">) =>
+          set((state) => {
+            state.tradePrice = payload.tradePrice;
+            state.signedChangePrice = payload.signedChangePrice;
+            state.changeRate = payload.changeRate;
+          }),
         clearMarket: () =>
           set((state) => {
             state.market = "BTC/KRW";

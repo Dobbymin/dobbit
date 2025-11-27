@@ -22,6 +22,11 @@ export const useSetMarket = () => {
   return setMarket;
 };
 
+export const useUpdateTicker = () => {
+  const updateTicker = useMarketStore((state) => state.updateTicker);
+  return updateTicker;
+};
+
 export const useClearMarket = () => {
   const clearMarket = useMarketStore((state) => state.clearMarket);
   return clearMarket;
