@@ -3,4 +3,5 @@ export type MarketInfoType = {
   koreanName: string;
   tradePrice: number;
   changeRate: number;
+  signedChangePrice: number;
 };

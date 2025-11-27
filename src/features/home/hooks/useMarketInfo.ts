@@ -17,6 +17,7 @@ export const useMarketInfo = ({ market }: Props) => {
       tradePrice: ticker.tradePrice,
       changeRate: ticker.changeRate,
       koreanName: ticker.koreanName,
+      signedChangePrice: ticker.signedChangePrice,
     });
   };
 

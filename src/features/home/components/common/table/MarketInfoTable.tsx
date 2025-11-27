@@ -8,15 +8,16 @@ type Props = {
   koreanName: string;
   tradePrice: number;
   changeRate: number;
+  signedChangePrice: number;
 };
 
-export const MarketInfoTable = ({ market, koreanName, tradePrice, changeRate }: Props) => {
+export const MarketInfoTable = ({ market, koreanName, tradePrice, changeRate, signedChangePrice }: Props) => {
   const { isActive, onClickMarketInfo } = useMarketInfo({ market });
 
   return (
     <TableRow
       key={market}
-      onClick={() => onClickMarketInfo({ market, koreanName, tradePrice, changeRate })}
+      onClick={() => onClickMarketInfo({ market, koreanName, tradePrice, changeRate, signedChangePrice })}
       className={cn(
         "cursor-pointer border-l-2 border-transparent transition-colors hover:bg-white/5",
         isActive ? "border-l-primary bg-white/5" : "border-l-transparent",

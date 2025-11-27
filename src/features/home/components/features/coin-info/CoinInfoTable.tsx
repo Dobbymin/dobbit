@@ -26,6 +26,7 @@ export const CoinInfoTable = () => {
               koreanName={ticker.koreanName}
               changeRate={ticker.changeRate}
               tradePrice={ticker.tradePrice}
+              signedChangePrice={ticker.signedChangePrice}
             />
           ))}
         </TableBody>

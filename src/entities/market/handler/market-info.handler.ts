@@ -22,7 +22,7 @@ export const marketInfoHandler = async () => {
 
     return {
       market: toDisplayMarket(ticker.market),
-      signed_change_price: ticker.signed_change_price,
+      signedChangePrice: ticker.signed_change_price,
       koreanName: marketInfo?.korean_name || "",
       tradePrice: ticker.trade_price,
       signed_change_rate: ticker.signed_change_rate,

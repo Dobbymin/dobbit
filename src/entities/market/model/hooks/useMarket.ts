@@ -11,6 +11,7 @@ export const useGetMarket = () => {
       changeRate: state.changeRate,
       market: state.market,
       tradePrice: state.tradePrice,
+      signedChangePrice: state.signedChangePrice,
     })),
   );
   return marketInfo;
@@ -33,5 +34,6 @@ export const getMarket = () => {
     koreanName: state.koreanName,
     market: state.market,
     tradePrice: state.tradePrice,
+    signedChangePrice: state.signedChangePrice,
   };
 };
