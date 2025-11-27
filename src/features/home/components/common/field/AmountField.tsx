@@ -6,9 +6,10 @@ import { useFormContext } from "react-hook-form";
 
 type AmountFieldProps = {
   onValueChange?: (value: number) => void;
+  coinInfo: string;
 };
 
-export const AmountField = ({ onValueChange }: AmountFieldProps) => {
+export const AmountField = ({ onValueChange, coinInfo }: AmountFieldProps) => {
   const form = useFormContext<OrderSchemaType>();
   return (
     <FormField
@@ -18,7 +19,7 @@ export const AmountField = ({ onValueChange }: AmountFieldProps) => {
         <FormItem className='flex w-full gap-1'>
           <FormLabel className='text-md w-25 gap-1'>
             <p>수량</p>
-            <p className='text-[10px] font-bold text-text-dark'>(WAXP)</p>
+            <p className='text-[10px] font-bold text-text-dark'>({coinInfo})</p>
           </FormLabel>
           <FormControl>
             <Input

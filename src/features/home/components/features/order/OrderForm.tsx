@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { OrderSchemaType, orderSchema, tradeAPI } from "@/entities";
+import { OrderSchemaType, orderSchema, tradeAPI, useGetMarket } from "@/entities";
 import { Button, Form } from "@/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -14,24 +14,19 @@ import { getWalletAPI } from "@/features/wallet/apis";
 
 import { getMarketsAPI, getTickerAPI } from "../../../apis";
 import { TabType } from "../../../types";
-import { AmountField, CoinSelect, PriceField, ToggleButtonGroup, TotalField } from "../../common";
+import { AmountField, PriceField, ToggleButtonGroup, TotalField } from "../../common";
 
 export const OrderForm = () => {
+  const { market } = useGetMarket();
   const [activeTab, setActiveTab] = useState<TabType>("매수");
-  const [selectedCoin, setSelectedCoin] = useState<string>("WAXP/KRW");
-
-  // 마켓 목록 조회
-  const { data: marketsData } = useQuery({
-    queryKey: ["markets"],
-    queryFn: () => getMarketsAPI(),
-  });
+  // const [market, ] = useState<string>(market);
 
   // 실시간 시세 조회 (1초마다)
   const { data: tickerData } = useQuery({
-    queryKey: ["ticker", selectedCoin],
-    queryFn: () => getTickerAPI(selectedCoin),
+    queryKey: ["ticker", market],
+    queryFn: () => getTickerAPI(market),
     refetchInterval: 1000, // 1초마다 갱신
-    enabled: !!selectedCoin,
+    enabled: !!market,
   });
 
   const currentPrice = tickerData?.data?.[0]?.trade_price || 0;
@@ -44,7 +39,7 @@ export const OrderForm = () => {
 
   // KRW 잔고와 선택된 코인 잔고 계산
   const krwBalance = walletData?.data?.find((w) => w.coin_id === "KRW")?.amount || 0;
-  const coinBalance = walletData?.data?.find((w) => w.coin_id === selectedCoin)?.amount || 0;
+  const coinBalance = walletData?.data?.find((w) => w.coin_id === market)?.amount || 0;
 
   const form = useForm<OrderSchemaType>({
     resolver: zodResolver(orderSchema),
@@ -103,7 +98,7 @@ export const OrderForm = () => {
   const { mutate: tradeMutate, isPending } = useMutation({
     mutationFn: async (data: OrderSchemaType) => {
       const response = await tradeAPI({
-        coin_id: selectedCoin,
+        coin_id: market,
         price: data.price,
         amount: data.amount,
         trade_type: activeTab === "매수" ? "buy" : "sell",
@@ -124,17 +119,12 @@ export const OrderForm = () => {
     <div className='flex w-full flex-col'>
       <ToggleButtonGroup activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className='w-full p-5'>
-        {/* 코인 선택 */}
-        <div className='mb-4'>
-          <CoinSelect value={selectedCoin} onChange={setSelectedCoin} markets={marketsData?.data?.slice(0, 20) || []} />
-        </div>
-
         <div className='flex w-full justify-between'>
           <p className='font-semibold'>주문가능</p>
           <div className='flex items-center gap-2'>
             <p className='font-bold'>{activeTab === "매수" ? krwBalance.toLocaleString() : coinBalance.toFixed(8)}</p>
             <p className='text-xs font-semibold text-text-dark'>
-              {activeTab === "매수" ? "KRW" : selectedCoin.includes("/") ? selectedCoin.split("/")[0] : selectedCoin}
+              {activeTab === "매수" ? "KRW" : market.includes("/") ? market.split("/")[0] : market}
             </p>
           </div>
         </div>
@@ -142,7 +132,10 @@ export const OrderForm = () => {
           <form className='flex w-full flex-col gap-3 py-6' onSubmit={(e) => e.preventDefault()}>
             <div className='grid gap-4'>
               <PriceField onValueChange={handlePriceChange} />
-              <AmountField onValueChange={handleAmountChange} />
+              <AmountField
+                coinInfo={market.includes("/") ? market.split("/")[0] : market}
+                onValueChange={handleAmountChange}
+              />
               <TotalField onValueChange={handleTotalChange} />
             </div>
             <div className='flex w-full gap-2 py-5'>

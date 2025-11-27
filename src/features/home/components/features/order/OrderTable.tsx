@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 
-import { syncMarketOrderAPI, useMarketOrderRealtime } from "@/entities";
+import { syncMarketOrderAPI, useGetMarket, useMarketOrderRealtime } from "@/entities";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared";
 import { useMutation } from "@tanstack/react-query";
 
 export const OrderTable = () => {
-  const market = "WAXP/KRW";
+  const { market } = useGetMarket();
   const { data: marketOrder, isLoading, error } = useMarketOrderRealtime(market);
 
   const { mutate: syncData } = useMutation({
