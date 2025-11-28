@@ -19,7 +19,6 @@ import { AmountField, PriceField, ToggleButtonGroup, TotalField } from "../../co
 export const OrderForm = () => {
   const { market } = useGetMarket();
   const [activeTab, setActiveTab] = useState<TabType>("매수");
-  // const [market, ] = useState<string>(market);
 
   // 실시간 시세 조회 (1초마다)
   const { data: tickerData } = useQuery({
