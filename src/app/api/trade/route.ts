@@ -1,7 +1,18 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { toDisplayMarket, toUpbitMarket } from "@/entities";
+
 import { createClient as createServerClient } from "@/shared/utils/supabase/server";
+
+// coin_id 정규화: 항상 display 형식(BTC/KRW)으로 저장
+const normalizeCoinId = (coinId: string): string => {
+  // 이미 display 형식이면 그대로
+  if (coinId.includes("/")) return coinId;
+  // Upbit 형식이면 display로 변환
+  if (coinId.includes("-")) return toDisplayMarket(coinId);
+  return coinId;
+};
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +24,10 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { coin_id, price, amount, trade_type } = body;
+    const { coin_id: rawCoinId, price, amount, trade_type } = body;
+
+    // coin_id를 정규화 (display 형식으로 통일)
+    const coin_id = normalizeCoinId(rawCoinId);
 
     // 필수 파라미터 검증
     if (!coin_id || !price || !amount || !trade_type) {

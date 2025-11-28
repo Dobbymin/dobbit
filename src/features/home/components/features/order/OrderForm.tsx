@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { OrderSchemaType, orderSchema, tradeAPI, useGetMarket } from "@/entities";
 import { Button, Form } from "@/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ import { AmountField, PriceField, ToggleButtonGroup, TotalField } from "../../co
 export const OrderForm = () => {
   const { market } = useGetMarket();
   const [activeTab, setActiveTab] = useState<TabType>("매수");
+  const queryClient = useQueryClient();
 
   // 실시간 시세 조회 (1초마다)
   const { data: tickerData } = useQuery({
@@ -31,7 +32,7 @@ export const OrderForm = () => {
   const currentPrice = tickerData?.data?.[0]?.trade_price || 0;
 
   // 지갑 정보 조회
-  const { data: walletData, refetch: refetchWallet } = useQuery({
+  const { data: walletData } = useQuery({
     queryKey: ["wallet"],
     queryFn: () => getWalletAPI(),
   });
@@ -91,7 +92,10 @@ export const OrderForm = () => {
   const onSuccess = () => {
     toast.success("주문이 완료되었습니다.");
     handleReset();
-    refetchWallet(); // 지갑 정보 재조회
+    // 모든 wallet 관련 쿼리 무효화 (다른 컴포넌트도 동기화)
+    queryClient.invalidateQueries({ queryKey: ["wallet"] });
+    // 거래 내역도 무효화
+    queryClient.invalidateQueries({ queryKey: ["trades"] });
   };
 
   const { mutate: tradeMutate, isPending } = useMutation({
