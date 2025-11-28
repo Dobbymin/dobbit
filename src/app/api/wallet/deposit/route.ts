@@ -46,15 +46,16 @@ export async function POST(request: Request) {
     }
 
     // FK 제약사항 대응: users 테이블에 사용자가 없으면 생성 (Supabase Auth에는 있지만 public.users 테이블에 없을 경우)
-    const { error: userSelectError } = await supabase.from("users").select("id").eq("id", userData.user.id).single();
+    const { error: userSelectError } = await supabase.from("profiles").select("id").eq("id", userData.user.id).single();
 
     if (userSelectError) {
       if ((userSelectError as { code?: string }).code === "PGRST116") {
         // users 테이블에 사용자 정보가 없으면 생성
-        const { error: userInsertError } = await supabase.from("users").insert({
+        const { error: userInsertError } = await supabase.from("profiles").insert({
           id: userData.user.id,
           email: userData.user.email || "",
           nickname: userData.user.user_metadata?.nickname || "User",
+          user_name: userData.user.user_metadata?.full_name || "User", // profiles 테이블의 user_name 필드 추가
         });
         if (userInsertError) {
           console.error("User insert error:", userInsertError);
