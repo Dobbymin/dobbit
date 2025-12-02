@@ -97,7 +97,8 @@ export async function POST(request: Request) {
           .eq("market_id", coin_id)
           .single();
 
-        if ((coinSelectError as { code?: string }).code === "PGRST116") {
+        // PGRST116: 데이터가 없을 때 발생하는 에러 코드
+        if (coinSelectError && coinSelectError.code === "PGRST116") {
           const { error: coinInsertError } = await supabase
             .from("coins")
             .insert({ market_id: coin_id, korean_name: coin_id, english_name: coin_id });
