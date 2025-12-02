@@ -7,7 +7,7 @@ export const HeldAssetsListSection = () => {
   // 실시간 지갑 데이터 구독
   useRealtimeWallet();
 
-  const { wallets, tickerMap, getCoinEvaluation, getCoinCostBasis } = useWalletStore();
+  const { wallets, tickerMap, costBasisMap, getCoinEvaluation } = useWalletStore();
 
   // KRW를 제외한 코인만 표시
   const coinWallets = wallets.filter((w) => w.coin_id !== "KRW");
@@ -17,8 +17,11 @@ export const HeldAssetsListSection = () => {
     const ticker = tickerMap[wallet.coin_id];
     const evaluation = getCoinEvaluation(wallet.coin_id, wallet.amount);
 
-    // 거래 집계에서 코인별 원가 총액
-    const buyTotalAmount = getCoinCostBasis(wallet.coin_id);
+    // 현재 보유 수량 × 평단가 = 매수 원가
+    const costInfo = costBasisMap[wallet.coin_id];
+    const avgPrice = costInfo?.avgPrice ?? 0;
+    const buyTotalAmount = wallet.amount * avgPrice;
+
     const profitAmount = evaluation - buyTotalAmount;
     const profitRate = buyTotalAmount > 0 ? (profitAmount / buyTotalAmount) * 100 : 0;
 
