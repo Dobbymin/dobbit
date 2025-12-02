@@ -14,18 +14,35 @@ export type AssetItem = {
 };
 
 /**
+ * Display 형식을 Upbit API 형식으로 변환
+ * @example "COMP/KRW" -> "KRW-COMP"
+ */
+const toUpbitMarketFormat = (coinId: string): string => {
+  if (!coinId.includes("/")) return coinId;
+  const [coin, currency] = coinId.split("/");
+  return `${currency}-${coin}`;
+};
+
+/**
  * 보유 자산 목록 데이터를 가공하는 훅
  * 지갑 데이터를 UI에 표시할 형식으로 변환
  */
 export const useAssetList = (): AssetItem[] => {
-  const { wallets, tickerMap, costBasisMap, getCoinEvaluation } = useWalletStore();
+  // Zustand store에서 개별 값을 구독 (반응성 향상)
+  const wallets = useWalletStore((state) => state.wallets);
+  const tickerMap = useWalletStore((state) => state.tickerMap);
+  const costBasisMap = useWalletStore((state) => state.costBasisMap);
+  const getCoinEvaluation = useWalletStore((state) => state.getCoinEvaluation);
 
   const assetList = useMemo(() => {
     // KRW를 제외한 코인만 필터링
     const coinWallets = wallets.filter((w) => w.coin_id !== "KRW");
 
     return coinWallets.map((wallet) => {
-      const ticker = tickerMap[wallet.coin_id];
+      // Ticker 조회 시 Upbit 형식으로 변환하여 검색
+      const upbitMarket = toUpbitMarketFormat(wallet.coin_id);
+      const ticker = tickerMap[upbitMarket] || tickerMap[wallet.coin_id];
+
       const evaluation = getCoinEvaluation(wallet.coin_id, wallet.amount);
 
       // 현재 보유 수량 × 평단가 = 매수 원가
