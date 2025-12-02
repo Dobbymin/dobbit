@@ -11,6 +11,7 @@ export const StatsAreaSection = () => {
   // Zustand store에서 계산된 값 가져오기
   const {
     wallets,
+    costBasisMap,
     getTotalEvaluation,
     getTotalCoinEvaluation,
     getTotalPurchase,
@@ -22,17 +23,20 @@ export const StatsAreaSection = () => {
   const krwWallet = wallets.find((w) => w.coin_id === "KRW");
   const heldKRW = krwWallet?.amount || 0;
 
+  // costBasisMap이 로드될 때까지 0으로 표시
+  const isCostBasisLoaded = Object.keys(costBasisMap).length > 0;
+
   // 총 평가액 (보유 KRW + 코인 평가금액)
   const totalEvaluation = getTotalEvaluation();
 
   // 총 매수 (현재 보유 코인의 원가 합계)
-  const totalPurchase = getTotalPurchase();
+  const totalPurchase = isCostBasisLoaded ? getTotalPurchase() : 0;
 
   // 총 평가 손익
-  const totalProfitLoss = getTotalProfitLoss();
+  const totalProfitLoss = isCostBasisLoaded ? getTotalProfitLoss() : 0;
 
   // 총 평가 수익률
-  const totalProfitRate = getTotalProfitRate();
+  const totalProfitRate = isCostBasisLoaded ? getTotalProfitRate() : 0;
 
   // 총 보유 자산 = 보유 KRW + 코인 평가금액
   const totalCoinEval = getTotalCoinEvaluation();

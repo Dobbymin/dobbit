@@ -20,7 +20,7 @@ export const ChartAreaSection = () => {
   return (
     <aside className='flex h-full w-[30%] flex-col items-center justify-center bg-surface-dark/20 p-6'>
       <div className='relative h-[220px] w-full'>
-        <ChartContainer config={chartConfig} className='h-full w-full'>
+        <ChartContainer config={chartConfig} className='h-full w-full' style={{ minHeight: 220 }}>
           <PieChart>
             <Pie
               data={chartData}
