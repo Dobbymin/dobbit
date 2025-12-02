@@ -2,24 +2,39 @@
 
 import { useState } from "react";
 
-import { Button, Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, Input } from "@/shared";
+import { depositAPI } from "@/entities";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+  Input,
+  queryClient,
+} from "@/shared";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { depositAPI } from "../apis/deposit.api";
+import { WALLET_KEYS } from "../constants";
 
 export const CashSection = () => {
   const [amount, setAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const onSuccess = () => {
+    toast.success("입금이 완료되었습니다!");
+    setAmount("");
+    setIsOpen(false);
+    queryClient.invalidateQueries({
+      queryKey: WALLET_KEYS.balance.krw(),
+    });
+  };
+
   const { mutate: deposit, isPending } = useMutation({
     mutationFn: (amount: number) => depositAPI(amount),
     onSuccess: () => {
-      toast.success(`${amount.toLocaleString()}원이 입금되었습니다!`);
-      setAmount("");
-      setIsOpen(false);
-      // 페이지 새로고침으로 지갑 데이터 업데이트
-      window.location.reload();
+      onSuccess();
     },
     onError: (error: Error) => {
       toast.error(`입금 실패: ${error.message}`);

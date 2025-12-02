@@ -1,4 +1,4 @@
-import { WalletEntity } from "../types";
+import { WalletEntity } from "../../types";
 
 export interface DepositParams {
   amount: number;

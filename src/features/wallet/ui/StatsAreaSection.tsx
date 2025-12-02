@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { Separator, Table, TableBody, TableCell, TableRow } from "@/shared";
 
 import { TableItem } from "../components";
@@ -8,43 +10,76 @@ export const StatsAreaSection = () => {
   // 실시간 지갑 데이터 구독
   useRealtimeWallet();
 
-  // Zustand store에서 계산된 값 가져오기
-  const {
-    wallets,
-    getTotalEvaluation,
-    getTotalCoinEvaluation,
-    getTotalPurchase,
-    getTotalProfitLoss,
-    getTotalProfitRate,
-  } = useWalletStore();
+  // Zustand store의 원시 상태 구독 (tickerMap, wallets, costBasisMap이 변경되면 재계산)
+  const wallets = useWalletStore((state) => state.wallets);
+  const tickerMap = useWalletStore((state) => state.tickerMap);
+  const costBasisMap = useWalletStore((state) => state.costBasisMap);
 
-  // KRW 잔고
-  const krwWallet = wallets.find((w) => w.coin_id === "KRW");
-  const heldKRW = krwWallet?.amount || 0;
+  // useMemo로 계산 - tickerMap, wallets, costBasisMap 변경 시 재계산
+  const stats = useMemo(() => {
+    const krwWallet = wallets.find((w) => w.coin_id === "KRW");
+    const heldKRW = krwWallet?.amount || 0;
 
-  // 총 평가액 (보유 KRW + 코인 평가금액)
-  const totalEvaluation = getTotalEvaluation();
+    // getCoinEvaluation 로직을 직접 구현 (tickerMap 의존성 명시)
+    const getCoinEval = (coinId: string, amount: number): number => {
+      if (coinId === "KRW") return amount;
 
-  // 총 매수 (현재 보유 코인의 원가 합계)
-  const totalPurchase = getTotalPurchase();
+      // Display 형식("COMP/KRW")을 Upbit 형식("KRW-COMP")으로 변환
+      const upbitFormat = coinId.includes("/") ? `${coinId.split("/")[1]}-${coinId.split("/")[0]}` : coinId;
 
-  // 총 평가 손익
-  const totalProfitLoss = getTotalProfitLoss();
+      const ticker = tickerMap[upbitFormat] || tickerMap[coinId];
+      if (!ticker) return 0;
+      return ticker.trade_price * amount;
+    };
 
-  // 총 평가 수익률
-  const totalProfitRate = getTotalProfitRate();
+    // 코인 평가액 계산
+    const totalCoinEval = wallets
+      .filter((w) => w.coin_id !== "KRW")
+      .reduce((total, w) => total + getCoinEval(w.coin_id, w.amount), 0);
 
-  // 총 보유 자산 = 보유 KRW + 코인 평가금액
-  const totalCoinEval = getTotalCoinEvaluation();
-  const totalAssets = heldKRW + totalCoinEval;
+    // 총 보유 자산
+    const totalAssets = heldKRW + totalCoinEval;
+
+    // 총 평가액
+    const totalEvaluation = wallets.reduce((total, wallet) => {
+      return total + getCoinEval(wallet.coin_id, wallet.amount);
+    }, 0);
+
+    // 총 매수 금액
+    const totalPurchase = wallets
+      .filter((w) => w.coin_id !== "KRW" && w.amount > 0)
+      .reduce((sum, w) => {
+        const costInfo = costBasisMap[w.coin_id];
+        const avgPrice = costInfo?.avgPrice ?? 0;
+        return sum + w.amount * avgPrice;
+      }, 0);
+
+    // 총 평가 손익
+    const totalProfitLoss = totalCoinEval - totalPurchase;
+
+    // 총 평가 수익률
+    const totalProfitRate = totalPurchase === 0 ? 0 : (totalProfitLoss / totalPurchase) * 100;
+
+    return {
+      heldKRW,
+      totalAssets,
+      totalEvaluation,
+      totalPurchase,
+      totalProfitLoss,
+      totalProfitRate,
+    };
+  }, [wallets, tickerMap, costBasisMap]);
+
+  // costBasisMap이 로드될 때까지 0으로 표시
+  const isLoaded = Object.keys(costBasisMap).length > 0;
 
   const data = {
-    heldKRW: heldKRW.toLocaleString("ko-KR"),
-    totalAssets: totalAssets.toLocaleString("ko-KR"),
-    totalBuy: totalPurchase.toLocaleString("ko-KR"),
-    totalProfitLoss: `${totalProfitLoss >= 0 ? "+" : ""}${totalProfitLoss.toLocaleString("ko-KR")}`,
-    totalEvaluation: totalEvaluation.toLocaleString("ko-KR"),
-    totalProfitRate: `${totalProfitRate >= 0 ? "+" : ""}${totalProfitRate.toFixed(2)}`,
+    heldKRW: stats.heldKRW.toLocaleString("ko-KR"),
+    totalAssets: stats.totalAssets.toLocaleString("ko-KR"),
+    totalBuy: (isLoaded ? stats.totalPurchase : 0).toLocaleString("ko-KR"),
+    totalProfitLoss: `${stats.totalProfitLoss >= 0 ? "+" : ""}${stats.totalProfitLoss.toLocaleString("ko-KR")}`,
+    totalEvaluation: stats.totalEvaluation.toLocaleString("ko-KR"),
+    totalProfitRate: `${stats.totalProfitRate >= 0 ? "+" : ""}${stats.totalProfitRate.toFixed(2)}`,
   };
 
   return (

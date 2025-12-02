@@ -1,88 +1,113 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 import { TickerData } from "@/features/home/apis";
 
-import { WalletEntity } from "../types";
+import { WalletEntity } from "@/entities/wallet";
+
 import { CostBasis } from "../utils/aggregate-trades";
 
 interface WalletState {
+  // State
   wallets: WalletEntity[];
-  tickerMap: Record<string, TickerData>;
-  costBasisMap: Record<string, CostBasis>; // 코인별 평균매수가/원가
+  tickerMap: Record<string, TickerData>; // Key: "KRW-COMP" (Upbit format)
+  costBasisMap: Record<string, CostBasis>; // Key: "COMP/KRW" (Display format)
+
+  // Actions
   setWallets: (wallets: WalletEntity[]) => void;
   setTickerMap: (tickerMap: Record<string, TickerData>) => void;
   setCostBasisMap: (map: Record<string, CostBasis>) => void;
-  getTotalEvaluation: () => number;
-  getTotalPurchase: () => number;
-  getTotalProfitLoss: () => number;
-  getTotalProfitRate: () => number;
-  getCoinEvaluation: (coinId: string, amount: number) => number;
-  getTotalCoinEvaluation: () => number; // KRW 제외 코인 평가액 합계
-  getCoinCostBasis: (coinId: string) => number; // 해당 코인의 총 원가
+
+  // Getters (Computeds)
+  getCoinEvaluation: (coinId: string, amount: number) => number; // 개별 코인 평가액
+  getTotalCoinEvaluation: () => number; // 코인만 평가액 합계
+  getTotalEvaluation: () => number; // 전체 자산 (KRW + 코인)
+  getTotalPurchase: () => number; // 총 매수금액
+  getTotalProfitLoss: () => number; // 총 평가손익
+  getTotalProfitRate: () => number; // 총 수익률
 }
 
-export const useWalletStore = create<WalletState>((set, get) => ({
-  wallets: [],
-  tickerMap: {},
-  costBasisMap: {},
+export const useWalletStore = create<WalletState>()(
+  devtools(
+    (set, get) => ({
+      // --- Initial State ---
+      wallets: [],
+      tickerMap: {},
+      costBasisMap: {},
 
-  setWallets: (wallets) => set({ wallets }),
+      // --- Actions ---
+      setWallets: (wallets) => set({ wallets }),
+      setTickerMap: (tickerMap) => set({ tickerMap }),
+      setCostBasisMap: (map) => set({ costBasisMap: map }),
 
-  setTickerMap: (tickerMap) => set({ tickerMap }),
-  setCostBasisMap: (map) => set({ costBasisMap: map }),
+      // --- Getters ---
 
-  // 특정 코인의 평가액 계산
-  getCoinEvaluation: (coinId, amount) => {
-    const { tickerMap } = get();
-    if (coinId === "KRW") return amount;
+      // 1. 특정 코인의 현재 평가금액 (현재가 * 수량)
+      getCoinEvaluation: (coinId, amount) => {
+        if (coinId === "KRW") return amount;
 
-    const ticker = tickerMap[coinId];
-    if (!ticker) return 0;
+        const { tickerMap } = get();
 
-    return ticker.trade_price * amount;
-  },
+        // Display 형식("COMP/KRW")을 Upbit 형식("KRW-COMP")으로 변환
+        const upbitFormat = coinId.includes("/") ? `${coinId.split("/")[1]}-${coinId.split("/")[0]}` : coinId;
 
-  // 코인 평가액 총합 (KRW 제외)
-  getTotalCoinEvaluation: () => {
-    const { wallets, getCoinEvaluation } = get();
-    return wallets
-      .filter((w) => w.coin_id !== "KRW")
-      .reduce((total, w) => total + getCoinEvaluation(w.coin_id, w.amount), 0);
-  },
+        // 두 형식 모두 시도
+        const ticker = tickerMap[upbitFormat] || tickerMap[coinId];
 
-  // 특정 코인의 총 원가
-  getCoinCostBasis: (coinId) => {
-    const { costBasisMap } = get();
-    return costBasisMap[coinId]?.totalCost ?? 0;
-  },
+        if (!ticker) return 0;
+        return ticker.trade_price * amount;
+      },
 
-  // 총 평가액 (모든 자산의 현재 가치 합계)
-  getTotalEvaluation: () => {
-    const { wallets, getCoinEvaluation } = get();
-    return wallets.reduce((total, wallet) => {
-      return total + getCoinEvaluation(wallet.coin_id, wallet.amount);
-    }, 0);
-  },
+      // 2. 코인들의 평가금액 총합 (보유 KRW 제외)
+      getTotalCoinEvaluation: () => {
+        const { wallets, getCoinEvaluation } = get();
+        return wallets
+          .filter((w) => w.coin_id !== "KRW")
+          .reduce((total, w) => total + getCoinEvaluation(w.coin_id, w.amount), 0);
+      },
 
-  // 총 매수액 (현재 보유 코인의 원가 합계)
-  getTotalPurchase: () => {
-    const { wallets, getCoinCostBasis } = get();
-    return wallets
-      .filter((w) => w.coin_id !== "KRW" && w.amount > 0)
-      .reduce((sum, w) => sum + getCoinCostBasis(w.coin_id), 0);
-  },
+      // 3. 총 보유자산 (보유 KRW + 코인 평가금액)
+      getTotalEvaluation: () => {
+        const { wallets, getCoinEvaluation } = get();
+        return wallets.reduce((total, wallet) => {
+          return total + getCoinEvaluation(wallet.coin_id, wallet.amount);
+        }, 0);
+      },
 
-  // 총 평가 손익
-  getTotalProfitLoss: () => {
-    const { getTotalCoinEvaluation, getTotalPurchase } = get();
-    return getTotalCoinEvaluation() - getTotalPurchase();
-  },
+      // 4. 총 매수금액 (보유 수량 * 평단가)
+      // *중요: 단순히 costBasisMap의 totalCost를 쓰면 안 됩니다.
+      // 매도 후 남은 잔량에 대한 원가만 계산해야 하므로 (수량 * 평단가) 공식을 씁니다.
+      getTotalPurchase: () => {
+        const { wallets, costBasisMap } = get();
 
-  // 총 평가 수익률
-  getTotalProfitRate: () => {
-    const { getTotalProfitLoss, getTotalPurchase } = get();
-    const purchase = getTotalPurchase();
-    if (purchase === 0) return 0;
-    return (getTotalProfitLoss() / purchase) * 100;
-  },
-}));
+        return wallets
+          .filter((w) => w.coin_id !== "KRW" && w.amount > 0)
+          .reduce((sum, w) => {
+            const costInfo = costBasisMap[w.coin_id];
+
+            // 평단가가 없으면 0원으로 처리 (혹은 현재가로 처리할 수도 있으나 보수적으로 0)
+            const avgPrice = costInfo?.avgPrice ?? 0;
+
+            return sum + w.amount * avgPrice;
+          }, 0);
+      },
+
+      // 5. 총 평가손익 (총 평가금액 - 총 매수금액)
+      getTotalProfitLoss: () => {
+        const totalEval = get().getTotalCoinEvaluation(); // 코인만 계산
+        const totalBuy = get().getTotalPurchase(); // 코인만 계산
+        return totalEval - totalBuy;
+      },
+
+      // 6. 총 수익률 ((평가손익 / 매수금액) * 100)
+      getTotalProfitRate: () => {
+        const profitLoss = get().getTotalProfitLoss();
+        const totalBuy = get().getTotalPurchase();
+
+        if (totalBuy === 0) return 0; // 0으로 나누기 방지
+        return (profitLoss / totalBuy) * 100;
+      },
+    }),
+    { name: "WalletStore" },
+  ),
+);

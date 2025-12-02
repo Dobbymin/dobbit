@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { OrderSchemaType, orderSchema, tradeAPI, useGetMarket } from "@/entities";
 import { Button, Form } from "@/shared";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { RotateCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { getWalletAPI } from "@/features/wallet/apis";
+import { useGetUserBalance } from "@/features/wallet";
 
 import { getTickerAPI } from "../../../apis";
 import { TabType } from "../../../types";
@@ -19,7 +19,6 @@ import { AmountField, PriceField, ToggleButtonGroup, TotalField } from "../../co
 export const OrderForm = () => {
   const { market } = useGetMarket();
   const [activeTab, setActiveTab] = useState<TabType>("매수");
-  const queryClient = useQueryClient();
 
   // 실시간 시세 조회 (1초마다)
   const { data: tickerData } = useQuery({
@@ -31,15 +30,12 @@ export const OrderForm = () => {
 
   const currentPrice = tickerData?.data?.[0]?.trade_price || 0;
 
-  // 지갑 정보 조회
-  const { data: walletData } = useQuery({
-    queryKey: ["wallet"],
-    queryFn: () => getWalletAPI(),
-  });
+  // 지갑 정보 조회 (FSD 구조에 맞게 useGetUserBalance 훅 사용)
+  const { data: walletData } = useGetUserBalance();
 
   // KRW 잔고와 선택된 코인 잔고 계산
-  const krwBalance = walletData?.data?.find((w) => w.coin_id === "KRW")?.amount || 0;
-  const coinBalance = walletData?.data?.find((w) => w.coin_id === market)?.amount || 0;
+  const krwBalance = walletData?.find((w) => w.coin_id === "KRW")?.amount || 0;
+  const coinBalance = walletData?.find((w) => w.coin_id === market)?.amount || 0;
 
   const form = useForm<OrderSchemaType>({
     resolver: zodResolver(orderSchema),
@@ -92,10 +88,7 @@ export const OrderForm = () => {
   const onSuccess = () => {
     toast.success("주문이 완료되었습니다.");
     handleReset();
-    // 모든 wallet 관련 쿼리 무효화 (다른 컴포넌트도 동기화)
-    queryClient.invalidateQueries({ queryKey: ["wallet"] });
-    // 거래 내역도 무효화
-    queryClient.invalidateQueries({ queryKey: ["trades"] });
+    // 지갑 정보는 useRealtimeWallet의 Supabase Realtime 구독으로 자동 갱신
   };
 
   const { mutate: tradeMutate, isPending } = useMutation({

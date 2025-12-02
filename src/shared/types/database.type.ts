@@ -243,6 +243,45 @@ export type Database = {
           },
         ]
       }
+      wallet_stats: {
+        Row: {
+          created_at: string | null
+          held_krw: number | null
+          id: string
+          total_assets: number | null
+          total_evaluation: number | null
+          total_profit_loss: number | null
+          total_profit_rate: number | null
+          total_purchase: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          held_krw?: number | null
+          id?: string
+          total_assets?: number | null
+          total_evaluation?: number | null
+          total_profit_loss?: number | null
+          total_profit_rate?: number | null
+          total_purchase?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          held_krw?: number | null
+          id?: string
+          total_assets?: number | null
+          total_evaluation?: number | null
+          total_profit_loss?: number | null
+          total_profit_rate?: number | null
+          total_purchase?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
