@@ -1,44 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared";
 
-import { useRealtimeWallet } from "../hooks";
-import { useWalletStore } from "../store";
+import { useAssetList, useRealtimeWallet } from "../hooks";
 
 export const HeldAssetsListSection = () => {
   // 실시간 지갑 데이터 구독
   useRealtimeWallet();
 
-  const { wallets, tickerMap, costBasisMap, getCoinEvaluation } = useWalletStore();
-
-  // KRW를 제외한 코인만 표시
-  const coinWallets = wallets.filter((w) => w.coin_id !== "KRW");
-
-  // 실제 데이터를 표시용 형식으로 변환
-  const assetList = coinWallets.map((wallet) => {
-    const ticker = tickerMap[wallet.coin_id];
-    const evaluation = getCoinEvaluation(wallet.coin_id, wallet.amount);
-
-    // 현재 보유 수량 × 평단가 = 매수 원가
-    const costInfo = costBasisMap[wallet.coin_id];
-    const avgPrice = costInfo?.avgPrice ?? 0;
-    const buyTotalAmount = wallet.amount * avgPrice;
-
-    const profitAmount = evaluation - buyTotalAmount;
-    const profitRate = buyTotalAmount > 0 ? (profitAmount / buyTotalAmount) * 100 : 0;
-
-    // 마켓 코드에서 코인 심볼 추출 (예: "BTC/KRW" -> "BTC")
-    const symbol = wallet.coin_id.includes("/") ? wallet.coin_id.split("/")[0] : wallet.coin_id;
-
-    return {
-      name: ticker?.market || wallet.coin_id,
-      symbol,
-      quantity: wallet.amount.toFixed(8),
-      buyPrice: buyTotalAmount.toLocaleString("ko-KR"),
-      currentPrice: evaluation.toLocaleString("ko-KR"),
-      profitRate: `${profitRate >= 0 ? "+" : ""}${profitRate.toFixed(2)}`,
-      profitAmount: `${profitAmount >= 0 ? "+" : ""}${profitAmount.toLocaleString("ko-KR")}`,
-      isProfit: profitAmount >= 0,
-    };
-  });
+  // 보유 자산 목록 데이터 가져오기
+  const assetList = useAssetList();
 
   return (
     <section className='mt-6'>
