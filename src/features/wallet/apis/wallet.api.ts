@@ -1,4 +1,4 @@
-import { WalletEntity } from "../types";
+import { WalletEntity } from "@/entities/wallet";
 
 export interface WalletResponse {
   success: boolean;

@@ -2,7 +2,8 @@ import { create } from "zustand";
 
 import { TickerData } from "@/features/home/apis";
 
-import { WalletEntity } from "../types";
+import { WalletEntity } from "@/entities/wallet";
+
 import { CostBasis } from "../utils/aggregate-trades";
 
 interface WalletState {

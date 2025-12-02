@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-import { toDisplayMarket, toUpbitMarket } from "@/entities";
+import { toDisplayMarket } from "@/entities";
 
 import { createClient as createServerClient } from "@/shared/utils/supabase/server";
 
