@@ -9,7 +9,7 @@ import { TickerData, getTickerAPI } from "../apis";
  * @param markets 조회할 마켓 (예: "KRW-BTC,KRW-ETH")
  * @param refetchInterval 갱신 주기 (ms), 기본값 1000ms (1초)
  */
-export const useRealtimeTicker = (markets: string, refetchInterval: number = 1000) => {
+export const useRealtimeTicker = (markets: string, refetchInterval: number = 500) => {
   const { data } = useQuery({
     queryKey: ["ticker", markets],
     queryFn: () => getTickerAPI(markets),
