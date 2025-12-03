@@ -2,65 +2,16 @@
 
 import dynamic from "next/dynamic";
 
-import { useMemo } from "react";
-
-import { useGetCandle, useGetMarket } from "@/entities";
 import { Skeleton } from "@/shared";
 import { ApexOptions } from "apexcharts";
+
+import { useCoinChartViewModel } from "../../../hooks";
 
 // SSR 비활성화
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export const CoinChartDisplay = () => {
-  const { market } = useGetMarket();
-
-  const apiMarket = useMemo(() => {
-    if (!market) return "KRW-BTC"; // 기본값 설정 (방어 코드)
-
-    // "/"가 포함된 경우 (BTC/KRW 형식일 때)
-    if (market.includes("/")) {
-      const [coin, currency] = market.split("/"); // ["BTC", "KRW"]
-      return `${currency}-${coin}`; // "KRW-BTC"
-    }
-
-    // 만약 이미 "KRW-BTC" 형식이거나 다른 형식이면 그대로 반환
-    return market;
-  }, [market]);
-
-  const { data: candleData, isLoading } = useGetCandle({ market: apiMarket, count: 50 });
-
-  // 데이터 변환 로직 (Memoization)
-  const { prices, volume } = useMemo(() => {
-    if (!candleData || candleData.length === 0) {
-      return { prices: [], volume: [] };
-    }
-
-    const sortedData = [...candleData].sort(
-      (a, b) => new Date(a.candle_date_time_kst).getTime() - new Date(b.candle_date_time_kst).getTime(),
-    );
-
-    const parseKstToUtc = (kstString: string) => {
-      return new Date(kstString + "Z").getTime();
-    };
-
-    const pricesData = sortedData.map((item) => ({
-      x: parseKstToUtc(item.candle_date_time_kst),
-      y: [
-        item.opening_price, // Open
-        item.high_price, // High
-        item.low_price, // Low
-        item.trade_price, // Close (현재가/종가)
-      ],
-    }));
-
-    // 3. 거래량 데이터 변환
-    const volumeData = sortedData.map((item) => ({
-      x: parseKstToUtc(item.candle_date_time_kst),
-      y: item.candle_acc_trade_volume.toFixed(3), // 소수점 정리
-    }));
-
-    return { prices: pricesData, volume: volumeData };
-  }, [candleData]);
+  const { prices, volume, isLoading } = useCoinChartViewModel(50);
 
   const candleOptions: ApexOptions = {
     chart: {
@@ -134,9 +85,7 @@ export const CoinChartDisplay = () => {
     grid: { show: false },
   };
 
-  // 로딩 중이거나 데이터가 없을 때 처리
   if (isLoading) return <Skeleton className='h-[492px] w-full' />;
-  if (!candleData) return null;
 
   return (
     <div className='w-full bg-surface-dark'>
