@@ -1,12 +1,14 @@
 import { UPBIT_URL } from "@/shared";
 
+import { CandleData } from "../types";
+
 interface CandleInterface {
   market: string;
   to?: string;
   count: number;
 }
 
-export const candleAPI = async ({ market, to, count }: CandleInterface) => {
+export const candleAPI = async ({ market, to, count }: CandleInterface): Promise<CandleData[]> => {
   const params = new URLSearchParams({
     market: market,
     count: count.toString(),
@@ -21,6 +23,6 @@ export const candleAPI = async ({ market, to, count }: CandleInterface) => {
     throw new Error(`Candle API error: ${response.status} ${response.statusText}`);
   }
 
-  const data = await response.json();
+  const data: CandleData[] = await response.json();
   return data;
 };
