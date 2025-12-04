@@ -1,9 +1,11 @@
 import { Button, Separator } from "@/shared";
 
+import type { ChartTimeframe } from "../../../store";
+
 type Props = {
-  timeframe: string;
-  selectedTimeframe: string;
-  setSelectedTimeframe: (timeframe: string) => void;
+  timeframe: ChartTimeframe;
+  selectedTimeframe: ChartTimeframe;
+  setSelectedTimeframe: (timeframe: ChartTimeframe) => void;
 };
 
 export const TimeframeButton = ({ timeframe, selectedTimeframe, setSelectedTimeframe }: Props) => {
