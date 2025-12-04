@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-
 import { Separator } from "@/shared";
 
+import { type ChartTimeframe, useChartStore } from "../../../store";
 import { ChartOptionButton, TimeframeButton } from "../../common";
 
-const timeframes = ["1초", "1분", "5분", "30분", "1시간", "주", "달", "년"];
+const timeframes: ChartTimeframe[] = ["1초", "1분", "5분", "30분", "1시간", "주", "달", "년"];
 
 export const ChartControls = () => {
-  const [selectedTimeframe, setSelectedTimeframe] = useState<string>("1초");
+  const selectedTimeframe = useChartStore((state) => state.selectedTimeframe);
+  const setSelectedTimeframe = useChartStore((state) => state.setSelectedTimeframe);
 
   return (
     <div className='flex items-center gap-2 border-b border-white/10 p-2'>
