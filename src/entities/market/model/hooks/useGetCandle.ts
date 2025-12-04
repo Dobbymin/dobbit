@@ -15,6 +15,6 @@ export const useGetCandle = (params: CandleParams) => {
     queryKey,
     queryFn: () => candleAPI(params),
 
-    refetchInterval: 500,
+    refetchInterval: type === "seconds" || type === "minutes" ? 500 : false,
   });
 };
